@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>KuSys.Extensions</name>
+    </assembly>
+    <members>
+        <member name="T:KuSys.Extensions.ConfigurationExtensions">
+            <summary>
+            KuSys Configuration extensions.
+            </summary>
+        </member>
+        <member name="M:KuSys.Extensions.ConfigurationExtensions.UseExceptionMiddleware(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            Use Global exception handler
+            </summary>
+            <param name="app"></param>
+        </member>
+        <member name="M:KuSys.Extensions.ConfigurationExtensions.AddKuSysServices(Microsoft.Extensions.DependencyInjection.IServiceCollection,Microsoft.Extensions.Configuration.ConfigurationManager)">
+            <summary>
+            Add required services for KuSys System.
+            </summary>
+            <param name="serviceCollection">Service collection</param>
+            <param name="config">Configuration manager</param>
+            <returns><see cref="T:Microsoft.Extensions.DependencyInjection.IServiceCollection"/></returns>
+        </member>
+    </members>
+</doc>

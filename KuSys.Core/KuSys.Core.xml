@@ -1,0 +1,645 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>KuSys.Core</name>
+    </assembly>
+    <members>
+        <member name="T:KuSys.Core.AttributeFilters.ClaimRequirementAttribute">
+            <summary>
+            Attribute for specifying Claim requirements while Authorization.
+            </summary>
+        </member>
+        <member name="M:KuSys.Core.AttributeFilters.ClaimRequirementAttribute.#ctor(System.String)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="claimType">Type of the claim (US-1,US-2,US-3,US-4)</param>
+        </member>
+        <member name="T:KuSys.Core.AttributeFilters.ClaimRequirementFilter">
+            <summary>
+            Authorization filter for defining claim reuqirements.
+            </summary>
+        </member>
+        <member name="M:KuSys.Core.AttributeFilters.ClaimRequirementFilter.#ctor(System.Security.Claims.Claim)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="claim"></param>
+        </member>
+        <member name="M:KuSys.Core.AttributeFilters.ClaimRequirementFilter.OnAuthorization(Microsoft.AspNetCore.Mvc.Filters.AuthorizationFilterContext)">
+            <summary>
+            Process to check if user has required claims for the operation.
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="T:KuSys.Core.Constants.DefaultRoles">
+            <summary>
+            Definition of Default Roles. These roles will be added into Database if they dont exist.
+            </summary>
+        </member>
+        <member name="F:KuSys.Core.Constants.DefaultRoles.Admin">
+            <summary>
+            Admin Role Constant
+            </summary>
+        </member>
+        <member name="F:KuSys.Core.Constants.DefaultRoles.Student">
+            <summary>
+            Student Role Constant
+            </summary>
+        </member>
+        <member name="M:KuSys.Core.Constants.DefaultRoles.AdminClaims">
+            <summary>
+            Get default claims for Admin Role.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:KuSys.Core.Constants.DefaultRoles.StudentClaims">
+            <summary>
+            Get default claims for User role.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:KuSys.Core.Gender">
+            <summary>
+            Gender definitions.
+            </summary>
+        </member>
+        <member name="F:KuSys.Core.Gender.WontProvide">
+            <summary>
+            User dont want to provide this information.
+            </summary>
+        </member>
+        <member name="F:KuSys.Core.Gender.Male">
+            <summary>
+            Male.
+            </summary>
+        </member>
+        <member name="F:KuSys.Core.Gender.Female">
+            <summary>
+            Female
+            </summary>
+        </member>
+        <member name="T:KuSys.Core.OperationResult">
+            <summary>
+            Definition of Operation Result.
+            </summary>
+        </member>
+        <member name="F:KuSys.Core.OperationResult.Failed">
+            <summary>
+            Operation Failed.
+            </summary>
+        </member>
+        <member name="F:KuSys.Core.OperationResult.Success">
+            <summary>
+            Operations success
+            </summary>
+        </member>
+        <member name="T:KuSys.Core.PermissionType">
+            <summary>
+            Definiton of PermissionTypes.
+            </summary>
+        </member>
+        <member name="F:KuSys.Core.PermissionType.Self">
+            <summary>
+            Can do the operation only for own user.
+            </summary>
+        </member>
+        <member name="F:KuSys.Core.PermissionType.All">
+            <summary>
+            Can do the operation for everyone.
+            </summary>
+        </member>
+        <member name="T:KuSys.Core.Exceptions.AuthenticationException">
+            <summary>
+            Authentication exception type
+            </summary>
+        </member>
+        <member name="M:KuSys.Core.Exceptions.AuthenticationException.#ctor">
+            <summary>
+            Create Authentication exception with default error message.
+            </summary>
+        </member>
+        <member name="M:KuSys.Core.Exceptions.AuthenticationException.#ctor(System.String)">
+            <summary>
+            Create Authentication exception with provided message
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="T:KuSys.Core.Exceptions.BaseException">
+            <summary>
+            Base class of Custom Exception Types
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Exceptions.BaseException.HttpStatusCode">
+            <summary>
+            Status code of the exception
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Exceptions.BaseException.ErrorCode">
+            <summary>
+            Custom Error Code for the exception
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Exceptions.BaseException.Message">
+            <summary>
+            Exception Message
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Exceptions.BaseException.Errors">
+            <summary>
+            List of errors for the exception
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Exceptions.BaseException.Description">
+            <summary>
+            Additional information about the exception
+            </summary>
+        </member>
+        <member name="M:KuSys.Core.Exceptions.BaseException.#ctor(System.String,System.String)">
+            <summary>
+            Base class of Exceptions
+            </summary>
+            <param name="errorCode">Error Code</param>
+            <param name="message">Error Messages</param>
+        </member>
+        <member name="T:KuSys.Core.Exceptions.DatabaseException">
+            <summary>
+            Type for database exceptions.
+            </summary>
+        </member>
+        <member name="M:KuSys.Core.Exceptions.DatabaseException.#ctor">
+            <summary>
+            Create database exception object with default error message.
+            </summary>
+        </member>
+        <member name="M:KuSys.Core.Exceptions.DatabaseException.#ctor(System.String)">
+            <summary>
+            Create database exception object with provided error message.
+            </summary>
+            <param name="message"></param>
+        </member>
+        <member name="T:KuSys.Core.Exceptions.ExceptionBuilder">
+            <summary>
+            Exception response model
+            </summary>
+        </member>
+        <member name="M:KuSys.Core.Exceptions.ExceptionBuilder.Reset">
+            <summary>
+            Reset values of builder.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:KuSys.Core.Exceptions.ExceptionBuilder.WithMessage(System.String)">
+            <summary>
+            Exception with specified message.
+            </summary>
+            <param name="message">Message</param>
+            <returns><see cref="T:KuSys.Core.Exceptions.ExceptionBuilder"/></returns>
+        </member>
+        <member name="M:KuSys.Core.Exceptions.ExceptionBuilder.WithErrors(System.Collections.Generic.List{System.String})">
+            <summary>
+            Exception with specified list of errors.
+            </summary>
+            <param name="errors">List of errors</param>
+            <returns><see cref="T:KuSys.Core.Exceptions.ExceptionBuilder"/></returns>
+        </member>
+        <member name="M:KuSys.Core.Exceptions.ExceptionBuilder.WithErrorCode(System.String)">
+            <summary>
+            Exception with specified error code.
+            </summary>
+            <param name="errorCode">Error code</param>
+            <returns><see cref="T:KuSys.Core.Exceptions.ExceptionBuilder"/></returns>
+        </member>
+        <member name="M:KuSys.Core.Exceptions.ExceptionBuilder.Build">
+            <summary>
+            Build and get Exception object.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:KuSys.Core.Exceptions.ExceptionBuilder.ToJson">
+            <summary>
+            Convert exception object to json.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:KuSys.Core.Exceptions.ExceptionModel">
+            <summary>
+            Exception model.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Exceptions.ExceptionModel.HttpStatusCode">
+            <summary>
+            Http Status Code
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Exceptions.ExceptionModel.ErrorCode">
+            <summary>
+            Custom Error Code for the exception
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Exceptions.ExceptionModel.Message">
+            <summary>
+            Exception Message
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Exceptions.ExceptionModel.Errors">
+            <summary>
+            List of errors for the exception
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Exceptions.ExceptionModel.Description">
+            <summary>
+            Additional information about the exception
+            </summary>
+        </member>
+        <member name="T:KuSys.Core.Exceptions.InvalidException">
+            <summary>
+            Type for Validation Exceptions
+            </summary>
+        </member>
+        <member name="M:KuSys.Core.Exceptions.InvalidException.#ctor(System.Collections.Generic.List{System.String})">
+            <summary>
+            Create validation exception with provided errors.
+            </summary>
+            <param name="errors"></param>
+        </member>
+        <member name="M:KuSys.Core.Exceptions.InvalidException.#ctor(System.Collections.Generic.IEnumerable{Microsoft.AspNetCore.Identity.IdentityError})">
+            <summary>
+            Create validation exception with provided IdentityErrors.
+            </summary>
+            <param name="errors"></param>
+        </member>
+        <member name="M:KuSys.Core.Exceptions.InvalidException.#ctor">
+            <summary>
+            Create validation exception with default error message.
+            </summary>
+        </member>
+        <member name="T:KuSys.Core.Exceptions.DataNotFoundException">
+            <summary>
+            Type for not found data exceptions.
+            </summary>
+        </member>
+        <member name="M:KuSys.Core.Exceptions.DataNotFoundException.#ctor">
+            <summary>
+            Create not found exception with default error message.
+            </summary>
+        </member>
+        <member name="M:KuSys.Core.Exceptions.DataNotFoundException.#ctor(System.String)">
+            <summary>
+            Create not found exception with provided error message.
+            </summary>
+            <param name="message">Error message</param>
+        </member>
+        <member name="T:KuSys.Core.Middlewares.GlobalExceptionHandler">
+            <summary>
+            Middleware to handle exceptions globally.
+            </summary>
+        </member>
+        <member name="M:KuSys.Core.Middlewares.GlobalExceptionHandler.#ctor(Microsoft.AspNetCore.Http.RequestDelegate)">
+            <summary>
+            Global exception handler.
+            </summary>
+            <param name="next"></param>
+        </member>
+        <member name="M:KuSys.Core.Middlewares.GlobalExceptionHandler.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            Invoke to catch exceptions.
+            </summary>
+            <param name="httpContext"></param>
+        </member>
+        <member name="T:KuSys.Core.Types.AddStudentResponse">
+            <summary>
+            Response type for AddNewStudent operation.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.AddStudentResponse.IsSuccess">
+            <summary>
+            Determine if the operation completed successfully
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.AddStudentResponse.Id">
+            <summary>
+            Id of the newly created user.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.AddStudentResponse.ErrorMessage">
+            <summary>
+            Error message if the operation was failed.
+            </summary>
+        </member>
+        <member name="T:KuSys.Core.Types.BaseDbResult`1">
+            <summary>
+            Used to create DbResult objects.
+            </summary>
+            <typeparam name="T">Return type of the operation.</typeparam>
+        </member>
+        <member name="M:KuSys.Core.Types.BaseDbResult`1.#ctor(`0,KuSys.Core.OperationResult,System.String)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="data">Result of the operation.</param>
+            <param name="result">Status of the operation.</param>
+            <param name="errorMessage">Error message if the operation has failed.</param>
+        </member>
+        <member name="P:KuSys.Core.Types.BaseDbResult`1.Data">
+            <summary>
+            Result of the operation.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.BaseDbResult`1.Result">
+            <summary>
+            Status of the opreation.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.BaseDbResult`1.ErrorMessage">
+            <summary>
+            Error message if the operation has failed.
+            </summary>
+        </member>
+        <member name="T:KuSys.Core.Types.CoursesResponse">
+            <summary>
+            Response type for CourseOperations.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.CoursesResponse.Name">
+            <summary>
+            Name of the course.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.CoursesResponse.Code">
+            <summary>
+            Code of the course.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.CoursesResponse.Id">
+            <summary>
+            Id of the course.
+            </summary>
+        </member>
+        <member name="T:KuSys.Core.Types.DbCreateResult`1">
+            <summary>
+            Return type for adding new data into database operation.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:KuSys.Core.Types.DbCreateResult`1.Id">
+            <summary>
+            Id of newly created object.
+            </summary>
+        </member>
+        <member name="M:KuSys.Core.Types.DbCreateResult`1.#ctor(`0,KuSys.Core.OperationResult,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:KuSys.Core.Types.DbDeleteResult`1">
+            <summary>
+            Return type of soft deleting data from database.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:KuSys.Core.Types.DbDeleteResult`1.#ctor(`0,KuSys.Core.OperationResult,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:KuSys.Core.Types.DbQueryListResult`1">
+            <summary>
+            Return type of getting a list of data from database.
+            </summary>
+            <typeparam name="T">The type which list will be created of.</typeparam>
+        </member>
+        <member name="M:KuSys.Core.Types.DbQueryListResult`1.#ctor(System.Collections.Generic.List{`0},KuSys.Core.OperationResult,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:KuSys.Core.Types.DbQuerySingleResult`1">
+            <summary>
+            Result type for getting single object from database.
+            </summary>
+            <typeparam name="T">Type of the object</typeparam>
+        </member>
+        <member name="M:KuSys.Core.Types.DbQuerySingleResult`1.#ctor(`0,KuSys.Core.OperationResult,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:KuSys.Core.Types.DbResultBuilder">
+            <summary>
+            Result builder to build ResponseTypes for database operations.
+            </summary>
+        </member>
+        <member name="M:KuSys.Core.Types.DbResultBuilder.CreateResultSuccess``1(``0)">
+            <summary>
+            Response type for successful create operations.
+            </summary>
+            <param name="model">The object which will be created.</param>
+            <typeparam name="TModel">Type of the object which will be created.</typeparam>
+            <returns>Returns <see cref="T:KuSys.Core.Types.DbCreateResult`1"/></returns>
+        </member>
+        <member name="M:KuSys.Core.Types.DbResultBuilder.CreateResultFailed``1(System.String)">
+            <summary>
+            Response type for failed create operations.
+            </summary>
+            <param name="errorMessage">Error Message. Defaults to empty string.</param>
+            <typeparam name="TModel">The type of the object which couldn't be created.</typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:KuSys.Core.Types.DbResultBuilder.ListResultSuccess``1(System.Collections.Generic.List{``0})">
+            <summary>
+            Successful Response type for Get queries which expects a list of data.
+            </summary>
+            <param name="list">Result of the operation.</param>
+            <typeparam name="TModel">The type of object which the list will be populated of.</typeparam>
+            <returns>Returns <see cref="T:KuSys.Core.Types.DbQueryListResult`1"/></returns>
+        </member>
+        <member name="M:KuSys.Core.Types.DbResultBuilder.SingleResultSuccess``1(``0)">
+            <summary>
+            Successful Response type for Get queries which expects a single data.
+            </summary>
+            <param name="model">Result of the operation.</param>
+            <typeparam name="TModel">The type of the data.</typeparam>
+            <returns>Returns <see cref="T:KuSys.Core.Types.DbQuerySingleResult`1"/></returns>
+        </member>
+        <member name="M:KuSys.Core.Types.DbResultBuilder.SingleResultFailed``1">
+            <summary>
+            Failed response type for Get queries which expects a single data.
+            </summary>
+            <typeparam name="TModel">The type of the data.</typeparam>
+            <returns>Returns <see cref="T:KuSys.Core.Types.DbQuerySingleResult`1"/></returns>
+        </member>
+        <member name="M:KuSys.Core.Types.DbResultBuilder.UpdateResultFailed``1(System.String)">
+            <summary>
+            Failed response type for Update operations.
+            </summary>
+            <typeparam name="TModel">The type of the object which update operation failed.</typeparam>
+            <returns>Returns <see cref="T:KuSys.Core.Types.DbUpdateResult`1"/></returns>
+        </member>
+        <member name="M:KuSys.Core.Types.DbResultBuilder.UpdateResultSuccess``1(``0)">
+            <summary>
+            Successful response type for Update operations.
+            </summary>
+            <param name="model">Operation result data.</param>
+            <typeparam name="TModel">Type of the data.</typeparam>
+            <returns>Returns <see cref="T:KuSys.Core.Types.DbUpdateResult`1"/></returns>
+        </member>
+        <member name="M:KuSys.Core.Types.DbResultBuilder.DeleteResultFailed``1(System.String)">
+            <summary>
+            Failed response type for the Delete operation.
+            </summary>
+            <typeparam name="TKey">Type of the key.</typeparam>
+            <returns>Returns <see cref="T:KuSys.Core.Types.DbDeleteResult`1"/></returns>
+        </member>
+        <member name="M:KuSys.Core.Types.DbResultBuilder.DeleteResultSuccess``1(``0)">
+            <summary>
+            Successful response type for the Delete operation.
+            </summary>
+            <param name="deletedId">The id of the deleted data.</param>
+            <typeparam name="TKey">The type of the key.</typeparam>
+            <returns></returns>
+        </member>
+        <member name="T:KuSys.Core.Types.DbUpdateResult`1">
+            <summary>
+            Response type for Update operations.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:KuSys.Core.Types.DbUpdateResult`1.#ctor(`0,KuSys.Core.OperationResult,System.String)">
+            <inheritdoc />
+        </member>
+        <member name="T:KuSys.Core.Types.GetStudentListResponse">
+            <summary>
+            Response type for List of Student Requests.
+            </summary>
+        </member>
+        <member name="T:KuSys.Core.Types.GetStudentResponse">
+            <summary>
+            Response type for Get Single Student Requests.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.GetStudentResponse.FirstName">
+            <summary>
+            First name of the student.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.GetStudentResponse.LastName">
+            <summary>
+            Last name of the student.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.GetStudentResponse.BirthDate">
+            <summary>
+            Birth date of the student.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.GetStudentResponse.Gender">
+            <summary>
+            Gender of the student. (0=Wont Provide, 1=Male, 2=Female)
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.GetStudentResponse.Id">
+            <summary>
+            Id of the student.
+            </summary>
+        </member>
+        <member name="T:KuSys.Core.Types.JwtSettings">
+            <summary>
+            JWT settings holder class. It will be used to bind appSettings.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.JwtSettings.Issuer">
+            <summary>
+            Issuer.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.JwtSettings.Audience">
+            <summary>
+            Audience
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.JwtSettings.Secret">
+            <summary>
+            Secret Key.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.JwtSettings.ExpiresIn">
+            <summary>
+            Token lifetime in minutes.
+            </summary>
+        </member>
+        <member name="T:KuSys.Core.Types.LoginResponse">
+            <summary>
+            Response type for login operations.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.LoginResponse.Token">
+            <summary>
+            Access token.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.LoginResponse.IsSuccessfull">
+            <summary>
+            Status of operation.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.LoginResponse.ErrorMessage">
+            <summary>
+            Error message if the login operation was failed.
+            </summary>
+        </member>
+        <member name="T:KuSys.Core.Types.PagedRequest">
+            <summary>
+            Base type of PagedRequests.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.PagedRequest.PageSize">
+            <summary>
+            Requested Page Size
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.PagedRequest.PageNumber">
+            <summary>
+            Requested Page Number.
+            </summary>
+        </member>
+        <member name="T:KuSys.Core.Types.PagedResponse`1">
+            <summary>
+            Base response type for PagedRequests.
+            </summary>
+            <typeparam name="T">Type of the object which the list will be populated.</typeparam>
+        </member>
+        <member name="P:KuSys.Core.Types.PagedResponse`1.PageSize">
+            <summary>
+            Requested Page Size.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.PagedResponse`1.PageNumber">
+            <summary>
+            Current Page Number
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.PagedResponse`1.TotalRecords">
+            <summary>
+            Total records count without paging applied.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.PagedResponse`1.LastPage">
+            <summary>
+            Last page number.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.PagedResponse`1.Data">
+            <summary>
+            Requested data
+            </summary>
+        </member>
+        <member name="T:KuSys.Core.Types.StudentsWithCourseResponse">
+            <summary>
+            Response type for Request of students with course information.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.StudentsWithCourseResponse.Student">
+            <summary>
+            Student information.
+            </summary>
+        </member>
+        <member name="P:KuSys.Core.Types.StudentsWithCourseResponse.Courses">
+            <summary>
+            List of the students matched courses.
+            </summary>
+        </member>
+    </members>
+</doc>

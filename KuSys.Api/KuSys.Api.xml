@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>KuSys.Api</name>
+    </assembly>
+    <members>
+        <member name="T:KuSys.Api.Controllers.AuthController">
+            <summary>
+            Authentication controller for the System.
+            </summary>
+        </member>
+        <member name="M:KuSys.Api.Controllers.AuthController.#ctor(KuSys.Services.IUserService)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="userService">User Service.</param>
+        </member>
+        <member name="M:KuSys.Api.Controllers.AuthController.Register(KuSys.Entities.Requests.RegisterUserRequestModel)">
+            <summary>
+            Register new user with no roles. You can use "make-admin" endpoint to give user "Admin" role.
+            </summary>
+            <param name="requestModel"></param>
+            <returns>Returns Id of newly created User.</returns>
+        </member>
+        <member name="M:KuSys.Api.Controllers.AuthController.Login(KuSys.Entities.Requests.LoginRequestModel)">
+            <summary>
+            Login endpoint. Users can login with their Email and password to get access token.
+            </summary>
+            <param name="requestModel"></param>
+            <returns>Returns Access token.</returns>
+        </member>
+        <member name="M:KuSys.Api.Controllers.AuthController.MakeAdmin(KuSys.Entities.Requests.LoginRequestModel)">
+            <summary>
+            This endpoint specifically created for test purposes. Use this endpoint to assign admin role to any user.
+            </summary>
+            <param name="requestModel"></param>
+            <returns>Returns 200 if operation was successfull</returns>
+        </member>
+        <member name="M:KuSys.Api.Controllers.AuthController.MakeStudent(KuSys.Entities.Requests.LoginRequestModel)">
+            <summary>
+            This endpoint specifically created for test purposes. Use this endpoint to assign Student role to any user.
+            </summary>
+            <param name="requestModel"></param>
+            <returns></returns>
+        </member>
+        <member name="T:KuSys.Api.Controllers.CourseController">
+            <summary>
+            Course controller to manage Courses.
+            </summary>
+        </member>
+        <member name="M:KuSys.Api.Controllers.CourseController.#ctor(KuSys.Services.ICourseService)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="courseService"></param>
+        </member>
+        <member name="M:KuSys.Api.Controllers.CourseController.GetAllCourses">
+            <summary>
+            Get All active courses. ***(ADMIN ONLY) US-1***
+            </summary>
+            <returns>Returns List of Active Courses</returns>
+        </member>
+        <member name="M:KuSys.Api.Controllers.CourseController.AddNewCourse(KuSys.Entities.Requests.AddNewCourseRequestModel)">
+            <summary>
+            Create new Course.
+            </summary>
+            <param name="requestModel"></param>
+            <returns></returns>
+        </member>
+        <member name="T:KuSys.Api.Controllers.StudentController">
+            <summary>
+            Student Endpoints.
+            </summary>
+        </member>
+        <member name="M:KuSys.Api.Controllers.StudentController.#ctor(KuSys.Services.IStudentService,KuSys.Services.IStudentCourseService)">
+            <summary>
+            Constructor.
+            </summary>
+            <param name="studentService">StudentService injection.</param>
+            <param name="studentCourseService">StudentCourseService injection.</param>
+        </member>
+        <member name="M:KuSys.Api.Controllers.StudentController.GetAllStudents(KuSys.Entities.Requests.GetAllStudentRequest)">
+            <summary>
+            Get all Students with their personal information. ***(ADMIN ONLY) US-1***
+            </summary>
+            <param name="request">Specify paging information.</param>
+            <returns>Returns paged list of Students.</returns>
+        </member>
+        <member name="M:KuSys.Api.Controllers.StudentController.AddStudent(KuSys.Entities.Requests.AddStudentRequestModel)">
+            <summary>
+            Add new student. This will also generate a user for the student and assign to Student Role.  ***(ADMIN ONLY) US-1***
+            </summary>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KuSys.Api.Controllers.StudentController.GetStudentById(System.Guid)">
+            <summary>
+            Get Student information with given StudentId. ***(ADMIN ONLY) US-1***
+            </summary>
+            <param name="id">Student Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:KuSys.Api.Controllers.StudentController.RemoveStudentById(System.Guid)">
+            <summary>
+            Delete student with given StudentId. --IT WILL SOFT DELETE--  ***(ADMIN ONLY) US-1***
+            </summary>
+            <param name="id">Student Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:KuSys.Api.Controllers.StudentController.UpdateStudent(System.Guid,KuSys.Entities.Requests.UpdateStudentModel)">
+            <summary>
+            Update student with specified information. ***(ADMIN ONLY) US-1***
+            </summary>
+            <param name="id">Student Id</param>
+            <param name="requestModel"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KuSys.Api.Controllers.StudentController.AvailableCourses(System.Guid)">
+            <summary>
+            Get available course list for Specified Student.
+            </summary>
+            <param name="studentId">StudentId</param>
+            <returns></returns>
+        </member>
+        <member name="M:KuSys.Api.Controllers.StudentController.JointCourses(System.Guid)">
+            <summary>
+            Get the list of courses in which the specified student has been matched.
+            </summary>
+            <param name="studentId">Student Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:KuSys.Api.Controllers.StudentController.SelectCourse(System.Guid,KuSys.Entities.Requests.SelectCourseRequest)">
+            <summary>
+            Assign a course to a student. A student only can be assigned to a course which she wasn't assigned already.  ***(ADMIN ONLY) US-1***
+            </summary>
+            <param name="studentId"></param>
+            <param name="request"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KuSys.Api.Controllers.StudentController.GetStudentsWithCourses">
+            <summary>
+            Get students with their course info.  ***(ADMIN ONLY) US-1***
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>

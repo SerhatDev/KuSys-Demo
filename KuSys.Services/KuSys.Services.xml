@@ -1,0 +1,182 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>KuSys.Services</name>
+    </assembly>
+    <members>
+        <member name="T:KuSys.Services.CourseService">
+            <summary>
+            Service to manage Courses
+            </summary>
+        </member>
+        <member name="F:KuSys.Services.CourseService._courseRepository">
+            <summary>
+            Course repository for accessing the Database
+            </summary>
+        </member>
+        <member name="M:KuSys.Services.CourseService.#ctor(KuSys.DataAccess.Repositories.Course.ICourseRepository)">
+            <summary>
+            Constructor. Please use DependencyInjection.
+            </summary>
+            <param name="courseRepository">Course repository</param>
+        </member>
+        <member name="M:KuSys.Services.CourseService.AddNewCourse(KuSys.Entities.Requests.AddNewCourseRequestModel)">
+            <summary>
+            Add new course.
+            </summary>
+            <param name="course">Course object to add into Database.</param>
+            <returns>Returns <see cref="T:KuSys.Core.Types.DbCreateResult`1"/> which includes information about the operation. Use Success property to determine if the operation was successfully completed.</returns>
+        </member>
+        <member name="M:KuSys.Services.CourseService.GetAll">
+            <summary>
+            Gett all courses
+            </summary>
+            <returns><see cref="T:KuSys.Core.Types.DbQueryListResult`1"/></returns>
+        </member>
+        <member name="T:KuSys.Services.IBaseService`1">
+            <summary>
+            Base service type for KySys services.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="T:KuSys.Services.StudentCourseService">
+            <summary>
+            StudentCourse service type.
+            </summary>
+        </member>
+        <member name="M:KuSys.Services.StudentCourseService.#ctor(KuSys.DataAccess.Repositories.StudentCourses.IStudentCourseRepository,KuSys.DataAccess.Repositories.Course.ICourseRepository,KuSys.DataAccess.Repositories.Student.IStudentRepository)">
+            <summary>
+            Constructor. Please use DependencyInjection.
+            </summary>
+            <param name="studentCourseRepository">StudentCourse repostiory</param>
+            <param name="courseRepository">course repository</param>
+            <param name="studentRepository">Student Repository</param>
+        </member>
+        <member name="M:KuSys.Services.StudentCourseService.GetAvailableCourses(System.Guid)">
+            <summary>
+            Get avaliable course list for specified user.
+            </summary>
+            <param name="studentId">Id of the user</param>
+            <returns><see cref="T:System.Collections.Generic.List`1"/></returns>
+        </member>
+        <member name="M:KuSys.Services.StudentCourseService.GetJoinedCourses(System.Guid)">
+            <summary>
+            Get the list of matched courses for specified student.
+            </summary>
+            <param name="studentId">Id of the student</param>
+            <returns><see cref="T:System.Collections.Generic.List`1"/></returns>
+        </member>
+        <member name="M:KuSys.Services.StudentCourseService.SelectCourse(System.Guid,KuSys.Entities.Requests.SelectCourseRequest)">
+            <summary>
+            Add new course for specified student
+            </summary>
+            <param name="studentId">Student Id</param>
+            <param name="request">Course Request</param>
+            <returns><see cref="T:KuSys.Core.Types.DbCreateResult`1"/></returns>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="T:KuSys.Services.StudentService">
+            <summary>
+            Service to manage stundets.
+            </summary>
+        </member>
+        <member name="M:KuSys.Services.StudentService.#ctor(KuSys.DataAccess.Repositories.Student.IStudentRepository,KuSys.DataAccess.Repositories.User.IUserRepository)">
+            <summary>
+            Consturoctor. Please use Dependencjy Injection.
+            </summary>
+            <param name="studentRepository">Student Repository</param>
+            <param name="userRepository">User repostiroy</param>
+        </member>
+        <member name="M:KuSys.Services.StudentService.UpdateStudent(System.Guid,KuSys.Entities.Requests.UpdateStudentModel)">
+            <summary>
+            Update Student with given values.
+            </summary>
+            <param name="id">Id of the student</param>
+            <param name="requestModel">New values</param>
+            <returns><see cref="T:KuSys.Core.Types.DbUpdateResult`1"/></returns>
+        </member>
+        <member name="M:KuSys.Services.StudentService.DeleteStudentById(System.Guid)">
+            <summary>
+            Delete student with given Id.
+            </summary>
+            <param name="id">Id of the student</param>
+            <returns><see cref="T:KuSys.Core.Types.DbDeleteResult`1"/></returns>
+        </member>
+        <member name="M:KuSys.Services.StudentService.GetStudentById(System.Guid)">
+            <summary>
+            Get student by Id.
+            </summary>
+            <param name="id">Student Id</param>
+            <returns><see cref="T:KuSys.Core.Types.GetStudentResponse"/></returns>
+        </member>
+        <member name="M:KuSys.Services.StudentService.AddStudent(KuSys.Entities.Requests.AddStudentRequestModel)">
+            <summary>
+            Add new student with given values.
+            </summary>
+            <param name="requestModel">Student data.</param>
+            <returns><see cref="T:KuSys.Core.Types.AddStudentResponse"/></returns>
+        </member>
+        <member name="M:KuSys.Services.StudentService.GetAll(KuSys.Entities.Requests.GetAllStudentRequest)">
+            <summary>
+            Get All students with pagination.
+            </summary>
+            <param name="requestModel">Paged Request</param>
+            <returns><see cref="T:KuSys.Core.Types.PagedResponse`1"/></returns>
+        </member>
+        <member name="M:KuSys.Services.StudentService.GetStudentsWithCourses">
+            <summary>
+            Get all students with their joined course information.
+            </summary>
+            <returns><see cref="T:KuSys.Core.Types.DbQueryListResult`1"/></returns>
+        </member>
+        <member name="T:KuSys.Services.UserService">
+            <summary>
+            User service to manage user operations.
+            </summary>
+        </member>
+        <member name="M:KuSys.Services.UserService.#ctor(KuSys.DataAccess.Repositories.User.IUserRepository,Microsoft.Extensions.Options.IOptions{KuSys.Core.Types.JwtSettings},Microsoft.AspNetCore.Identity.UserManager{KuSys.Entities.User})">
+            <summary>
+            Constructor. Please use DependencyInjection.
+            </summary>
+            <param name="userRepository"></param>
+            <param name="jwtSettings"></param>
+            <param name="userManager"></param>
+        </member>
+        <member name="M:KuSys.Services.UserService.CreateUser(KuSys.Entities.Requests.RegisterUserRequestModel)">
+            <summary>
+            Create new user with provided values.
+            </summary>
+            <param name="model">New user information</param>
+            <returns><see cref="T:KuSys.Core.Types.DbCreateResult`1"/></returns>
+        </member>
+        <member name="M:KuSys.Services.UserService.Login(KuSys.Entities.Requests.LoginRequestModel)">
+            <summary>
+            Login using email and password
+            </summary>
+            <param name="requestModel">Login information</param>
+            <returns><see cref="T:KuSys.Core.Types.LoginResponse"/></returns>
+        </member>
+        <member name="M:KuSys.Services.UserService.MakeAdmin(KuSys.Entities.Requests.LoginRequestModel)">
+            <summary>
+            Assing a user Admin Role (Test purposes Only)
+            </summary>
+            <param name="requestModel"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KuSys.Services.UserService.GetClaims(KuSys.Entities.User)">
+            <summary>
+            Get claims for a user to add into Token
+            </summary>
+            <param name="user"></param>
+            <returns></returns>
+        </member>
+        <member name="M:KuSys.Services.UserService.GenerateTokenOptions(Microsoft.IdentityModel.Tokens.SigningCredentials,System.Collections.Generic.IList{System.Security.Claims.Claim})">
+            <summary>
+            Generate JWT Token with provided values.
+            </summary>
+            <param name="signingCredentials">Credentials to use</param>
+            <param name="claims">Claims to add</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
