@@ -33,7 +33,7 @@ public sealed class UserRepository : IUserRepository
     /// <returns>Returns <see cref="DbCreateResult{T}">Id</see> of newly created user.</returns>
     public async Task<DbCreateResult<Guid>> AddUser(Entities.User model,string password)
     {
-        // Create user with provied information via userManager.
+        // WithData user with provied information via userManager.
         var createUserResult = await _userManager.CreateAsync(model);
         
         // If create result was not successful, return failed result
@@ -64,7 +64,7 @@ public sealed class UserRepository : IUserRepository
     /// <returns>Returns <see cref="DbCreateResult{T}">Id</see> of newly created user.</returns>
     public async Task<DbCreateResult<Entities.User>> AddStudentUser(Entities.User model, string password)
     {
-        // Create user with provied information via userManager.
+        // WithData user with provied information via userManager.
         var createUserResult = await _userManager.CreateAsync(model);
         
         // If create result was not successful, return failed result

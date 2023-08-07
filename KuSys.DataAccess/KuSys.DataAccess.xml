@@ -16,6 +16,13 @@
             <param name="builder">ModelBuilder</param>
             <returns><see cref="T:Microsoft.EntityFrameworkCore.ModelBuilder"/></returns>
         </member>
+        <member name="M:KuSys.DataAccess.DatabaseExtensions.SeedRoles(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <summary>
+            Seed default roles.
+            </summary>
+            <param name="modelBuilder">ModelBuilder</param>
+            <returns></returns>
+        </member>
         <member name="P:KuSys.DataAccess.KuSysDbContext.Students">
             <summary>
             Students Table
@@ -35,11 +42,7 @@
             <inheritdoc />
         </member>
         <member name="T:KuSys.DataAccess.Repositories.BaseRepository`2">
-            <summary>
-            Base type for Repositories to manage Database operations.
-            </summary>
-            <typeparam name="TModel">Entity type for databaes operations.</typeparam>
-            <typeparam name="TKey">The key type of the provided entity</typeparam>
+            <inheritdoc />
         </member>
         <member name="M:KuSys.DataAccess.Repositories.BaseRepository`2.#ctor(KuSys.DataAccess.KuSysDbContext)">
             <summary>
@@ -48,60 +51,31 @@
             <param name="dbContext"></param>
         </member>
         <member name="M:KuSys.DataAccess.Repositories.BaseRepository`2.AddNew(`0)">
-            <summary>
-            Add new data into database.
-            </summary>
-            <param name="model">Data to save</param>
-            <returns></returns>
+            <inheritdoc />
         </member>
         <member name="M:KuSys.DataAccess.Repositories.BaseRepository`2.GetAll">
-            <summary>
-            Get all data for the specified entity.
-            </summary>
-            <returns>List of the data for specified entity as <see cref="T:KuSys.Core.Types.DbQueryListResult`1"/></returns>
+            <inheritdoc />
         </member>
         <member name="M:KuSys.DataAccess.Repositories.BaseRepository`2.GetAll``1(``0)">
-            <summary>
-            Get all data for the specified entity with pagination.
-            </summary>
-            <param name="pagedRequest">Request information which includes paging information. (Should be derived from <see cref="T:KuSys.Core.Types.PagedRequest"/></param>
-            <typeparam name="TPagedRequest">Type of the request (Should be derived from <see cref="T:KuSys.Core.Types.PagedRequest"/></typeparam>
-            <returns></returns>
+            <inheritdoc />
         </member>
         <member name="M:KuSys.DataAccess.Repositories.BaseRepository`2.GetById(`1)">
-            <summary>
-            Get single item for specified Id.
-            </summary>
-            <param name="id">Id of the data.</param>
-            <returns>Returns <see cref="T:KuSys.Core.Types.DbQuerySingleResult`1"/></returns>
+            <inheritdoc />
         </member>
         <member name="M:KuSys.DataAccess.Repositories.BaseRepository`2.Update(`0)">
-            <summary>
-            Update entity with given information.
-            </summary>
-            <param name="model">Model to update</param>
-            <returns>Returns <see cref="T:KuSys.Core.Types.DbUpdateResult`1"/></returns>
+            <inheritdoc />
         </member>
         <member name="M:KuSys.DataAccess.Repositories.BaseRepository`2.Delete(`0)">
-            <summary>
-            Delete the entity by model.
-            </summary>
-            <param name="model">Model to delete.</param>
-            <returns>Returns <see cref="T:KuSys.Core.Types.DbDeleteResult`1"/></returns>
+            <inheritdoc />
         </member>
         <member name="M:KuSys.DataAccess.Repositories.BaseRepository`2.DeleteById(`1)">
-            <summary>
-            Delete the entity by it's id.
-            </summary>
-            <param name="id">Id of the entity to delete.</param>
-            <returns></returns>
+            <inheritdoc />
         </member>
         <member name="M:KuSys.DataAccess.Repositories.BaseRepository`2.Query(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
-            <summary>
-            Custom queries to get data.
-            </summary>
-            <param name="query">Where clause</param>
-            <returns>Returns <see cref="T:KuSys.Core.Types.DbQueryListResult`1"/></returns>
+            <inheritdoc />
+        </member>
+        <member name="M:KuSys.DataAccess.Repositories.BaseRepository`2.Query``1(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}},``0)">
+            <inheritdoc />
         </member>
         <member name="T:KuSys.DataAccess.Repositories.Course.CourseRepository">
             <summary>
@@ -111,6 +85,94 @@
         <member name="M:KuSys.DataAccess.Repositories.Course.CourseRepository.#ctor(KuSys.DataAccess.KuSysDbContext)">
             <inheritdoc />
         </member>
+        <member name="T:KuSys.DataAccess.Repositories.Course.ICourseRepository">
+            <summary>
+            Repository class for managing database operations of Courses.
+            </summary>
+        </member>
+        <member name="T:KuSys.DataAccess.Repositories.IBaseRepository`2">
+            <summary>
+            Base type for Repositories to manage Database operations.
+            </summary>
+            <typeparam name="TModel">Entity type for databaes operations.</typeparam>
+            <typeparam name="TKey">The key type of the provided entity</typeparam>
+        </member>
+        <member name="M:KuSys.DataAccess.Repositories.IBaseRepository`2.AddNew(`0)">
+            <summary>
+            Add new data into database.
+            </summary>
+            <param name="model">Data to save</param>
+            <returns></returns>
+        </member>
+        <member name="M:KuSys.DataAccess.Repositories.IBaseRepository`2.GetAll">
+            <summary>
+            Get all data for the specified entity.
+            </summary>
+            <returns>List of the data for specified entity as <see cref="T:KuSys.Core.Types.DbQueryListResult`1"/></returns>
+        </member>
+        <member name="M:KuSys.DataAccess.Repositories.IBaseRepository`2.GetAll``1(``0)">
+            <summary>
+            Get all data for the specified entity with pagination.
+            </summary>
+            <param name="pagedRequest">Request information which includes paging information. (Should be derived from <see cref="T:KuSys.Contracts.RequestModels.PagedRequest"/></param>
+            <typeparam name="TPagedRequest">Type of the request (Should be derived from <see cref="T:KuSys.Contracts.RequestModels.PagedRequest"/></typeparam>
+            <returns></returns>
+        </member>
+        <member name="M:KuSys.DataAccess.Repositories.IBaseRepository`2.GetById(`1)">
+            <summary>
+            Get single item for specified Id.
+            </summary>
+            <param name="id">Id of the data.</param>
+            <returns>Returns <see cref="T:KuSys.Core.Types.DbQuerySingleResult`1"/></returns>
+        </member>
+        <member name="M:KuSys.DataAccess.Repositories.IBaseRepository`2.Update(`0)">
+            <summary>
+            Update entity with given information.
+            </summary>
+            <param name="model">Model to update</param>
+            <returns>Returns <see cref="T:KuSys.Core.Types.DbUpdateResult`1"/></returns>
+        </member>
+        <member name="M:KuSys.DataAccess.Repositories.IBaseRepository`2.Delete(`0)">
+            <summary>
+            Delete the entity by model.
+            </summary>
+            <param name="model">Model to delete.</param>
+            <returns>Returns <see cref="T:KuSys.Core.Types.DbDeleteResult`1"/></returns>
+        </member>
+        <member name="M:KuSys.DataAccess.Repositories.IBaseRepository`2.DeleteById(`1)">
+            <summary>
+            Delete the entity by it's id.
+            </summary>
+            <param name="id">Id of the entity to delete.</param>
+            <returns></returns>
+        </member>
+        <member name="M:KuSys.DataAccess.Repositories.IBaseRepository`2.Query(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}})">
+            <summary>
+            Custom queries to get data.
+            </summary>
+            <param name="query">Where clause</param>
+            <returns>Returns <see cref="T:KuSys.Core.Types.DbQueryListResult`1"/></returns>
+        </member>
+        <member name="M:KuSys.DataAccess.Repositories.IBaseRepository`2.Query``1(System.Linq.Expressions.Expression{System.Func{`0,System.Boolean}},``0)">
+            <summary>
+            Custom queries to get data with paging applied.
+            </summary>
+            <param name="query">Where clause</param>
+            <param name="pagedRequest">Paging information.</param>
+            <returns>Returns <see cref="T:KuSys.Core.Types.PagedResponse`1"/></returns>
+        </member>
+        <member name="T:KuSys.DataAccess.Repositories.Student.IStudentRepository">
+            <summary>
+            Repository class for managing database operations of Students.
+            </summary>
+        </member>
+        <member name="M:KuSys.DataAccess.Repositories.Student.IStudentRepository.StudentsWithCourses(KuSys.Contracts.RequestModels.GetStudentsWithCoursesRequest)">
+            <summary>
+            Get students with their joined courses information.
+            </summary>
+            <param name="request">Paging information of the request.</param>
+            <returns>List of students with their joined courses as <see cref="T:KuSys.Contracts.ResponseModels.StudentsWithCoursesResponse"/> model</returns>
+        </member>
         <member name="T:KuSys.DataAccess.Repositories.Student.StudentRepository">
             <summary>
             Student repository to manage Database operations.
@@ -119,11 +181,16 @@
         <member name="M:KuSys.DataAccess.Repositories.Student.StudentRepository.#ctor(KuSys.DataAccess.KuSysDbContext)">
             <inheritdoc />
         </member>
-        <member name="M:KuSys.DataAccess.Repositories.Student.StudentRepository.StudentsWithCourses">
+        <member name="M:KuSys.DataAccess.Repositories.Student.StudentRepository.StudentsWithCourses(KuSys.Contracts.RequestModels.GetStudentsWithCoursesRequest)">
             <summary>
             Get the list of students with thier matched courses information.
             </summary>
             <returns>Returns <see cref="T:KuSys.Core.Types.DbQueryListResult`1"/></returns>
+        </member>
+        <member name="T:KuSys.DataAccess.Repositories.StudentCourses.IStudentCourseRepository">
+            <summary>
+            Repository class for managing database operations of StudentCourse.
+            </summary>
         </member>
         <member name="T:KuSys.DataAccess.Repositories.StudentCourses.StudentCourseRepository">
             <summary>
@@ -132,6 +199,68 @@
         </member>
         <member name="M:KuSys.DataAccess.Repositories.StudentCourses.StudentCourseRepository.#ctor(KuSys.DataAccess.KuSysDbContext)">
             <inheritdoc />
+        </member>
+        <member name="T:KuSys.DataAccess.Repositories.User.IUserRepository">
+            <summary>
+            Repository class for managing database operations of Users.
+            </summary>
+        </member>
+        <member name="M:KuSys.DataAccess.Repositories.User.IUserRepository.AddUser(KuSys.Entities.User,System.String)">
+            <summary>
+            Add new user with no role.
+            </summary>
+            <param name="model">User entity</param>
+            <param name="password">Password of the user</param>
+            <returns><see cref="T:KuSys.Core.Types.DbCreateResult`1"/> with newly added User's id</returns>
+        </member>
+        <member name="M:KuSys.DataAccess.Repositories.User.IUserRepository.AddStudentUser(KuSys.Entities.User,System.String)">
+            <summary>
+            Adds user for a student, Student role will be assigned.
+            </summary>
+            <param name="model">User Entity</param>
+            <param name="password">Password of the user</param>
+            <returns><see cref="T:KuSys.Core.Types.DbCreateResult`1"/> with newly added user model.</returns>
+        </member>
+        <member name="M:KuSys.DataAccess.Repositories.User.IUserRepository.UpdateUser(KuSys.Entities.User)">
+            <summary>
+            Updates user entity with given values.
+            </summary>
+            <param name="model">User entity update</param>
+            <returns><see cref="T:KuSys.Core.Types.DbUpdateResult`1"/> with updated values.</returns>
+        </member>
+        <member name="M:KuSys.DataAccess.Repositories.User.IUserRepository.DeleteUser(KuSys.Entities.User)">
+            <summary>
+            Soft deletes user by user entity.
+            </summary>
+            <param name="model">User entity to soft delete.</param>
+            <returns><see cref="T:KuSys.Core.Types.DbDeleteResult`1"/> with deleted user's id</returns>
+        </member>
+        <member name="M:KuSys.DataAccess.Repositories.User.IUserRepository.DeleteUserById(System.Guid)">
+            <summary>
+            Soft deletes user by user id.
+            </summary>
+            <param name="id">User id to soft delete.</param>
+            <returns><see cref="T:KuSys.Core.Types.DbDeleteResult`1"/> with deleted user's id</returns>
+        </member>
+        <member name="M:KuSys.DataAccess.Repositories.User.IUserRepository.GetUserById(System.Guid)">
+            <summary>
+            Get user entity by it's id.
+            </summary>
+            <param name="id">User id to get details of.</param>
+            <returns><see cref="T:KuSys.Core.Types.DbQuerySingleResult`1"/> with requested user entity object.</returns>
+        </member>
+        <member name="M:KuSys.DataAccess.Repositories.User.IUserRepository.GetUsers">
+            <summary>
+            Get all users in the system.
+            </summary>
+            <returns><see cref="T:KuSys.Core.Types.DbQueryListResult`1"/></returns>
+        </member>
+        <member name="M:KuSys.DataAccess.Repositories.User.IUserRepository.Query(System.Linq.Expressions.Expression{System.Func{KuSys.Entities.User,System.Boolean}})">
+            <summary>
+            Custom query user table.
+            </summary>
+            <param name="query">Where condition.</param>
+            <returns><see cref="T:KuSys.Core.Types.DbQueryListResult`1"/></returns>
         </member>
         <member name="T:KuSys.DataAccess.Repositories.User.UserRepository">
             <summary>
@@ -199,23 +328,6 @@
             Get users with specified query.
             </summary>
             <param name="query">Lambda query to filter users.</param>
-            <returns></returns>
-        </member>
-        <member name="T:KuSys.DataAccess.Seed.SeedRoles">
-            <summary>
-            Type to seed roles, we couldnt use DbContext's modelbuilder since we are using AspNet.Identity package.
-            </summary>
-        </member>
-        <member name="M:KuSys.DataAccess.Seed.SeedRoles.#ctor(Microsoft.AspNetCore.Identity.RoleManager{KuSys.Entities.UserRole})">
-            <summary>
-            Constructor.
-            </summary>
-            <param name="userRoleManager"></param>
-        </member>
-        <member name="M:KuSys.DataAccess.Seed.SeedRoles.Seed">
-            <summary>
-            Seed Default roles.
-            </summary>
             <returns></returns>
         </member>
     </members>

@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using KuSys.Core;
 
 namespace KuSys.Entities;
 

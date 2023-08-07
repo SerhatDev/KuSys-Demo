@@ -1,5 +1,3 @@
-using KuSys.Core;
-
 namespace KuSys.Entities;
 
 /// <summary>
@@ -25,7 +23,7 @@ public sealed class Student : EntityBase<Guid>
     /// <summary>
     /// Gender  of student
     /// </summary>
-    public Gender Gender { get; set; }
+    public int Gender { get; set; }
     
     /// <summary>
     /// User Id  of student

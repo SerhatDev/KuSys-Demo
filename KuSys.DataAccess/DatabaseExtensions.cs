@@ -1,4 +1,6 @@
+using KuSys.Core.Constants;
 using KuSys.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace KuSys.DataAccess;
@@ -52,5 +54,33 @@ public static class DatabaseExtensions
         
         // Return builder
         return builder;
+    }
+
+    /// <summary>
+    /// Seed default roles.
+    /// </summary>
+    /// <param name="modelBuilder">ModelBuilder</param>
+    /// <returns></returns>
+    public static ModelBuilder SeedRoles(this ModelBuilder modelBuilder)
+    {
+        Guid adminRoleId = Guid.NewGuid();
+        Guid studentRoleId = Guid.NewGuid();
+        
+        // Add roles
+        modelBuilder.Entity<UserRole>().HasData(
+            new UserRole { Id = adminRoleId, Name = DefaultRoles.Admin, NormalizedName = DefaultRoles.Admin.ToUpper() },
+            new UserRole { Id = studentRoleId, Name = DefaultRoles.Student, NormalizedName = DefaultRoles.Student.ToUpper() }
+        );
+
+        // Get ever roles claims
+        var roleClaims = 
+            DefaultRoles.AdminClaims(adminRoleId)
+                .Concat(DefaultRoles.StudentClaims(studentRoleId));
+        
+        // Seed claims for each role
+        modelBuilder.Entity<IdentityRoleClaim<Guid>>().HasData(
+            roleClaims
+        );
+        return modelBuilder;
     }
 }

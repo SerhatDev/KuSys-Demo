@@ -20,7 +20,7 @@ public abstract class BaseException : System.Exception
     /// <summary>
     /// Exception Message
     /// </summary>
-    public string Message { get; set; }
+    public new string Message { get; set; }
 
     /// <summary>
     /// List of errors for the exception

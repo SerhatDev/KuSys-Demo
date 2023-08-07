@@ -1,4 +1,5 @@
 using System.Net;
+using FluentValidation.Results;
 using KuSys.Core.Constants;
 using Microsoft.AspNetCore.Identity;
 
@@ -31,6 +32,19 @@ public sealed class InvalidException : BaseException
         var identityErrors = errors.ToList();
         this.Errors = identityErrors.Select(x=> x.Description).ToList();
         this.Description = identityErrors.FirstOrDefault()?.Description;
+        this.HttpStatusCode = HttpStatusCode.UnprocessableEntity;
+    }
+    
+    /// <summary>
+    /// Create validation exception with provided IdentityErrors.
+    /// </summary>
+    /// <param name="errors"></param>
+    public InvalidException(IEnumerable<ValidationFailure> errors)
+        : base(ErrorCodes.ValidationExceptionErrorCode, ErrorCodes.ValidationExceptionDefaultMsg)
+    {
+        var validaitonErrors = errors.ToList();
+        this.Errors = validaitonErrors.Select(x=> x.ErrorMessage).ToList();
+        this.Description = validaitonErrors.FirstOrDefault()?.ErrorMessage;
         this.HttpStatusCode = HttpStatusCode.UnprocessableEntity;
     }
 

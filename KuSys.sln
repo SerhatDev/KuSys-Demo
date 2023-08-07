@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KuSys.Extensions", "KuSys.E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KuSys.Services.Tests", "KuSys.Services.Tests\KuSys.Services.Tests.csproj", "{249DED63-6220-4B78-9BC8-2448CE39ECD4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KuSys.Contracts", "KuSys.Contracts\KuSys.Contracts.csproj", "{326962C3-A09B-4B0B-A98C-3E9663AC1ED6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,5 +50,9 @@ Global
 		{249DED63-6220-4B78-9BC8-2448CE39ECD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{249DED63-6220-4B78-9BC8-2448CE39ECD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{249DED63-6220-4B78-9BC8-2448CE39ECD4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{326962C3-A09B-4B0B-A98C-3E9663AC1ED6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{326962C3-A09B-4B0B-A98C-3E9663AC1ED6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{326962C3-A09B-4B0B-A98C-3E9663AC1ED6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{326962C3-A09B-4B0B-A98C-3E9663AC1ED6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

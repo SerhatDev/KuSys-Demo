@@ -1,16 +1,14 @@
 using System.Linq.Expressions;
+using KuSys.Contracts.RequestModels;
 using KuSys.Core.Exceptions;
+using KuSys.Core.Helpers;
 using KuSys.Core.Types;
 using KuSys.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace KuSys.DataAccess.Repositories;
 
-/// <summary>
-/// Base type for Repositories to manage Database operations.
-/// </summary>
-/// <typeparam name="TModel">Entity type for databaes operations.</typeparam>
-/// <typeparam name="TKey">The key type of the provided entity</typeparam>
+/// <inheritdoc />
 public abstract class BaseRepository<TModel,TKey> 
     : IBaseRepository<TModel,TKey>
 where TModel : EntityBase<TKey>
@@ -26,11 +24,7 @@ where TModel : EntityBase<TKey>
         _dbContext = dbContext;
     }
     
-    /// <summary>
-    /// Add new data into database.
-    /// </summary>
-    /// <param name="model">Data to save</param>
-    /// <returns></returns>
+    /// <inheritdoc />
     public async Task<DbCreateResult<TModel>> AddNew(TModel model)
     {
         // Get databaseSet for current entity.
@@ -49,11 +43,8 @@ where TModel : EntityBase<TKey>
         // if code reaches that point, return failed response.
         throw new DatabaseException("Couldn't add data into Database! No rows affected");
     }
-
-    /// <summary>
-    /// Get all data for the specified entity.
-    /// </summary>
-    /// <returns>List of the data for specified entity as <see cref="DbQueryListResult{T}"/></returns>
+    
+    /// <inheritdoc />
     public async Task<DbQueryListResult<TModel>> GetAll()
     {
         // Get databaseSet for current entity, we dont need to track those since no modifications will be applied to them.
@@ -66,14 +57,10 @@ where TModel : EntityBase<TKey>
         // Return the list.
         return DbResultBuilder.ListResultSuccess(list);
     }
-
-    /// <summary>
-    /// Get all data for the specified entity with pagination.
-    /// </summary>
-    /// <param name="pagedRequest">Request information which includes paging information. (Should be derived from <see cref="PagedRequest"/></param>
-    /// <typeparam name="TPagedRequest">Type of the request (Should be derived from <see cref="PagedRequest"/></typeparam>
-    /// <returns></returns>
-    public async Task<PagedResponse<TModel>> GetAll<TPagedRequest>(TPagedRequest pagedRequest) where TPagedRequest : PagedRequest
+    
+    /// <inheritdoc />
+    public async Task<PagedResponse<TModel>> GetAll<TPagedRequest>(TPagedRequest pagedRequest) 
+        where TPagedRequest : PagedRequest
     {
         // Get databaseSet for current entity, we dont need to track those since no modifications will be applied to them.
         var dbSet = _dbContext.Set<TModel>()
@@ -84,30 +71,23 @@ where TModel : EntityBase<TKey>
         
         // Apply pagination with using IQueryable to gain performance over IEnumareble, so query will be executed at last point.
         // If performance will be issue later, try to change pagination system and maybe use cursor-based pagination.
-        var list = await dbSet
-            .Skip((pagedRequest.PageNumber - 1) * pagedRequest.PageSize)
-            .Take(pagedRequest.PageSize)
-            .ToListAsync();
+        var list = dbSet.ToPagedList(pagedRequest.PageSize!.Value, pagedRequest.PageNumber!.Value);
         
-        // Create response object with pagination information.
-        var pagedResponse = new PagedResponse<TModel>()
+        // WithData response object with pagination information.
+        var pagedResponse = new PagedResponse<TModel>
         {
-            PageNumber = pagedRequest.PageNumber,
-            PageSize = pagedRequest.PageSize,
-            TotalRecords = totalRecords,
-            LastPage = (int)MathF.Ceiling((float)totalRecords / (float)pagedRequest.PageSize),
+            PageNumber = pagedRequest.PageNumber!.Value,
+            PageSize = pagedRequest.PageSize!.Value,
+            RecordsCount = totalRecords,
+            PageCount = (int)MathF.Ceiling(totalRecords / (float)pagedRequest.PageSize),
             Data = list
         };
         
         // return the data.
         return pagedResponse;
     }
-
-    /// <summary>
-    /// Get single item for specified Id.
-    /// </summary>
-    /// <param name="id">Id of the data.</param>
-    /// <returns>Returns <see cref="DbQuerySingleResult{T}"/></returns>
+    
+    /// <inheritdoc />
     public async Task<DbQuerySingleResult<TModel>> GetById(TKey id)
     {
         // Get databaseSet for current entity, we dont need to track those since no modifications will be applied to them.
@@ -124,12 +104,8 @@ where TModel : EntityBase<TKey>
         // if code reaches to that point, return Failed response.
         throw new DataNotFoundException($"Record for given id ({id.ToString()}) was not found!");
     }
-
-    /// <summary>
-    /// Update entity with given information.
-    /// </summary>
-    /// <param name="model">Model to update</param>
-    /// <returns>Returns <see cref="DbUpdateResult{T}"/></returns>
+    
+    /// <inheritdoc />
     public async Task<DbUpdateResult<TModel>> Update(TModel model)
     {
         // Get databaseSet for current entity.
@@ -149,12 +125,8 @@ where TModel : EntityBase<TKey>
         // if code reaches that point, return failed response.
         throw new DatabaseException("Couldn't update data in Database! No rows affected");
     }
-
-    /// <summary>
-    /// Delete the entity by model.
-    /// </summary>
-    /// <param name="model">Model to delete.</param>
-    /// <returns>Returns <see cref="DbDeleteResult{T}"/></returns>
+    
+    /// <inheritdoc />
     public async Task<DbDeleteResult<TKey>> Delete(TModel model)
     {
         // Get databaseSet for current entity.
@@ -180,12 +152,8 @@ where TModel : EntityBase<TKey>
         // if code reaches that point, return failed response.
         throw new DatabaseException("Couldn't update data in Database! No rows affected");
     }
-
-    /// <summary>
-    /// Delete the entity by it's id.
-    /// </summary>
-    /// <param name="id">Id of the entity to delete.</param>
-    /// <returns></returns>
+    
+    /// <inheritdoc />
     public async Task<DbDeleteResult<TKey>> DeleteById(TKey id)
     {
         // Get databaseSet for current entity.
@@ -211,12 +179,8 @@ where TModel : EntityBase<TKey>
         // if code reaches to that point, return Failed response.
         throw new DatabaseException("Couldn't update data in Database! No rows affected");
     }
-
-    /// <summary>
-    /// Custom queries to get data.
-    /// </summary>
-    /// <param name="query">Where clause</param>
-    /// <returns>Returns <see cref="DbQueryListResult{T}"/></returns>
+    
+    /// <inheritdoc />
     public async Task<DbQueryListResult<TModel>> Query(Expression<Func<TModel, bool>> query)
     {
         // Get databaseSet for current entity, we dont need to track those since no modifications will be applied to them.
@@ -228,5 +192,34 @@ where TModel : EntityBase<TKey>
         
         // Return the result as Success response.
         return DbResultBuilder.ListResultSuccess(list);
+    }
+
+    /// <inheritdoc />
+    public async Task<PagedResponse<TModel>> Query<TPagedRequest>(Expression<Func<TModel, bool>> query, TPagedRequest pagedRequest) where TPagedRequest : PagedRequest
+    {
+        // Get databaseSet for current entity, we dont need to track those since no modifications will be applied to them.
+        var dbSet = _dbContext.Set<TModel>()
+            .AsNoTracking()
+            .Where(query);
+        
+        // Get the count of all data. Using Count function of dbSet directly to send single request and only get the row count no other columns which we wont need at that point. 
+        var totalRecords = await dbSet.CountAsync();
+        
+        // Apply pagination with using IQueryable to gain performance over IEnumareble, so query will be executed at last point.
+        // If performance will be issue later, try to change pagination system and maybe use cursor-based pagination.
+        var list = dbSet.ToPagedList(pagedRequest.PageSize!.Value, pagedRequest.PageNumber!.Value);
+        
+        // WithData response object with pagination information.
+        var pagedResponse = new PagedResponse<TModel>
+        {
+            PageNumber = pagedRequest.PageNumber!.Value,
+            PageSize = pagedRequest.PageSize!.Value,
+            RecordsCount = totalRecords,
+            PageCount = (int)MathF.Ceiling(totalRecords / (float)pagedRequest.PageSize),
+            Data = list
+        };
+        
+        // return the data.
+        return pagedResponse;
     }
 }

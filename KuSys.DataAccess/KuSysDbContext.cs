@@ -41,6 +41,9 @@ public class KuSysDbContext : IdentityDbContext<User, UserRole, Guid>
         
         // Seed default courses.
         builder.SeedCourses();
+
+        // Seed default roles.
+        builder.SeedRoles();
         
         base.OnModelCreating(builder);
     }

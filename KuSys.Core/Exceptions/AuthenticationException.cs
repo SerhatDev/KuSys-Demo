@@ -1,3 +1,4 @@
+using System.Net;
 using KuSys.Core.Constants;
 
 namespace KuSys.Core.Exceptions;
@@ -13,6 +14,7 @@ public sealed class AuthenticationException : BaseException
     public AuthenticationException() 
         : base(ErrorCodes.AuthenticationExceptionErrorCode, ErrorCodes.AuthenticationExceptionDefaultMsg)
     {
+        this.HttpStatusCode = HttpStatusCode.Forbidden;
     }
     
     /// <summary>
@@ -22,5 +24,6 @@ public sealed class AuthenticationException : BaseException
     public AuthenticationException(string message) 
         : base(ErrorCodes.AuthenticationExceptionErrorCode, message)
     {
+        this.HttpStatusCode = HttpStatusCode.Forbidden;
     }
 }

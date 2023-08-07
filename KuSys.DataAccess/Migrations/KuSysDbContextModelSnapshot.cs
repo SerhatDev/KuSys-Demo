@@ -46,28 +46,28 @@ namespace KuSys.DataAccess.Migrations
                     b.HasData(
                         new
                         {
-                            Id = new Guid("d13ff36b-df7d-45b0-a6f7-dca3b022defa"),
+                            Id = new Guid("2d6d8bce-ad84-4b9d-b517-19ad31e058d9"),
                             Code = "CSI101",
                             IsDeleted = false,
                             Name = "Introduction to Computer Science"
                         },
                         new
                         {
-                            Id = new Guid("c7781220-2dbe-465f-9a2e-be9574132aed"),
+                            Id = new Guid("2cf1f816-f699-41d1-a523-1f21ce0a387b"),
                             Code = "CSI102",
                             IsDeleted = false,
                             Name = "Algorithms"
                         },
                         new
                         {
-                            Id = new Guid("9decd035-3efa-471d-82e9-e46833519c13"),
+                            Id = new Guid("36b8edd3-ee08-4587-ac71-346e8a01e36d"),
                             Code = "MAT101",
                             IsDeleted = false,
                             Name = "Calculus"
                         },
                         new
                         {
-                            Id = new Guid("b93847dc-ed8f-49e9-8115-1a0997ebe86b"),
+                            Id = new Guid("0f4519d1-3aee-4696-bf45-309558c4348f"),
                             Code = "PHY101",
                             IsDeleted = false,
                             Name = "Physics"
@@ -233,6 +233,22 @@ namespace KuSys.DataAccess.Migrations
                         .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("0d17b035-07bc-421b-92b6-5199f0a63434"),
+                            ConcurrencyStamp = "be2f4d84-fb65-4e49-a3e2-635f0749c33b",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = new Guid("95598675-fadd-4f63-b445-4d5a00bb2968"),
+                            ConcurrencyStamp = "cdf0fb65-51ed-4d19-a87e-68b4bdf7c975",
+                            Name = "Student",
+                            NormalizedName = "STUDENT"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
@@ -257,6 +273,57 @@ namespace KuSys.DataAccess.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClaimType = "US-1",
+                            ClaimValue = "FullAccess",
+                            RoleId = new Guid("0d17b035-07bc-421b-92b6-5199f0a63434")
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ClaimType = "US-2",
+                            ClaimValue = "FullAccess",
+                            RoleId = new Guid("0d17b035-07bc-421b-92b6-5199f0a63434")
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ClaimType = "US-3",
+                            ClaimValue = "FullAccess",
+                            RoleId = new Guid("0d17b035-07bc-421b-92b6-5199f0a63434")
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ClaimType = "US-4",
+                            ClaimValue = "FullAccess",
+                            RoleId = new Guid("0d17b035-07bc-421b-92b6-5199f0a63434")
+                        },
+                        new
+                        {
+                            Id = 5,
+                            ClaimType = "US-2",
+                            ClaimValue = "StudentAccess",
+                            RoleId = new Guid("95598675-fadd-4f63-b445-4d5a00bb2968")
+                        },
+                        new
+                        {
+                            Id = 6,
+                            ClaimType = "US-3",
+                            ClaimValue = "StudentAccess",
+                            RoleId = new Guid("95598675-fadd-4f63-b445-4d5a00bb2968")
+                        },
+                        new
+                        {
+                            Id = 7,
+                            ClaimType = "US-4",
+                            ClaimValue = "FullAccess",
+                            RoleId = new Guid("95598675-fadd-4f63-b445-4d5a00bb2968")
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<System.Guid>", b =>

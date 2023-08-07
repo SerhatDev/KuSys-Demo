@@ -2,13 +2,16 @@ using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using KuSys.Contracts.RequestModels;
+using KuSys.Contracts.ResponseModels;
+using KuSys.Core;
 using KuSys.Core.Constants;
 using KuSys.Core.Exceptions;
 using KuSys.Core.Types;
 using KuSys.DataAccess.Repositories.User;
 using KuSys.Entities;
-using KuSys.Entities.Requests;
-using KuSys.Entities.TypeMappings;
+using KuSys.Services.Interfaces;
+using Mapster;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -23,6 +26,7 @@ public sealed class UserService : IUserService
     private readonly IUserRepository _userRepository;
     private readonly JwtSettings _jwtSettings;
     private readonly UserManager<User> _userManager;
+    private readonly IStudentService _studentService;
 
     /// <summary>
     /// Constructor. Please use DependencyInjection.
@@ -30,45 +34,51 @@ public sealed class UserService : IUserService
     /// <param name="userRepository"></param>
     /// <param name="jwtSettings"></param>
     /// <param name="userManager"></param>
-    public UserService(IUserRepository userRepository,IOptions<JwtSettings> jwtSettings, UserManager<User> userManager)
+    /// <param name="studentService"></param>
+    public UserService(IUserRepository userRepository,IOptions<JwtSettings> jwtSettings, UserManager<User> userManager,IStudentService studentService)
     {
         _userRepository = userRepository;
         _jwtSettings = jwtSettings.Value;
         _userManager = userManager;
+        _studentService = studentService;
     }
     /// <summary>
-    /// Create new user with provided values.
+    /// WithData new user with provided values.
     /// </summary>
     /// <param name="model">New user information</param>
     /// <returns><see cref="DbCreateResult{T}"/></returns>
-    public async Task<DbCreateResult<Guid>> CreateUser(RegisterUserRequestModel model)
+    public async Task<RegisterResponseModel> CreateUser(RegisterRequestModel model)
     {
-        // Create user via userRepository.
-        var result = await _userRepository.AddUser(model.ToEntity(),model.Password);
+        var userEntity = model.Adapt<User>();
+        // WithData user via userRepository.
+        var result = await _userRepository.AddUser(userEntity,model.Password);
+
+        if (result.Result == OperationResult.Success)
+            return RegisterResponseModel.Success(result.Data);
         
         // return data
-        return result;
+        return RegisterResponseModel.Fail();
     }
     /// <summary>
     /// Login using email and password
     /// </summary>
     /// <param name="requestModel">Login information</param>
-    /// <returns><see cref="LoginResponse"/></returns>
-    public async Task<LoginResponse> Login(LoginRequestModel requestModel)
+    /// <returns><see cref="LoginResponseModel"/></returns>
+    public async Task<LoginResponseModel> Login(LoginRequestModel requestModel)
     {
         // Find user with given email
         var foundUser = await _userManager.FindByEmailAsync(requestModel.Email);
         
         // if user was not found, return Error response.
         if (foundUser is null)
-            throw new DataNotFoundException($"User with email ({requestModel.Email}) was not found!");
+            throw new AuthenticationException($"User with email ({requestModel.Email}) was not found!");
         
         // Check if user password is correct
         var passwordMatch = await _userManager.CheckPasswordAsync(foundUser, requestModel.Password);
         
         // if provided passwor doesn't match, return Error response.
         if (passwordMatch is false)
-            throw new DataNotFoundException($"Provided password was not correct for user ({requestModel.Email})");
+            throw new AuthenticationException($"Provided password was not correct for user ({requestModel.Email})");
         
         // If provided login information was correct, generate JWT token with required claims.
         
@@ -84,10 +94,10 @@ public sealed class UserService : IUserService
         
         
         // Return Login Response
-        return new LoginResponse()
+        return new LoginResponseModel()
         {
             Token = token,
-            IsSuccessfull = true
+            IsSuccess = true
         };
     }
 
@@ -112,15 +122,15 @@ public sealed class UserService : IUserService
         if (!addToRoleResult.Succeeded && addToRoleResult.Errors.All(x => x.Code != "UserAlreadyInRole"))
             return false;
         
-        // Add required claims for admin role to user.
-        var addClaimsResult =  await _userManager.AddClaimsAsync(foundUser, DefaultRoles.AdminClaims());
+        // // Add required claims for admin role to user.
+        // var addClaimsResult =  await _userManager.AddClaimsAsync(foundUser, DefaultRoles.AdminClaims());
         
         // If we werent able to add claims, remove user from the role and return false,
-        if (!addClaimsResult.Succeeded)
-        {
-            await _userManager.RemoveFromRoleAsync(foundUser, DefaultRoles.Admin);
-            return false;
-        }
+        // if (!addClaimsResult.Succeeded)
+        // {
+        //     await _userManager.RemoveFromRoleAsync(foundUser, DefaultRoles.Admin);
+        //     return false;
+        // }
 
         
         // If code reaches to that point, return true
@@ -134,7 +144,10 @@ public sealed class UserService : IUserService
     /// <returns></returns>
     private async Task<IList<Claim>> GetClaims(User user)
     {
+        var student =await _studentService.GetByUserId(user.Id);
         var claims = await _userManager.GetClaimsAsync(user);
+        claims.Add(new Claim(ClaimTypes.NameIdentifier,student.Id.ToString()));
+        claims.Add(new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()));
         claims.Add(new Claim(ClaimTypes.Name, user.UserName));
         claims.Add(new Claim(ClaimTypes.Email, user.Email));
         claims.Add(new Claim(ClaimTypes.DateOfBirth, user.BirthDate.ToString(CultureInfo.InvariantCulture)));

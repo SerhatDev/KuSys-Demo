@@ -19,12 +19,12 @@ public class PagedResponse<T>
     /// <summary>
     /// Total records count without paging applied.
     /// </summary>
-    public int TotalRecords { get; set; }
+    public int RecordsCount { get; set; }
     
     /// <summary>
     /// Last page number.
     /// </summary>
-    public int LastPage { get; set; }
+    public int PageCount { get; set; }
     
     /// <summary>
     /// Requested data

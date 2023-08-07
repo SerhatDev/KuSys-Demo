@@ -11,6 +11,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\KuSys.Contracts\KuSys.Contracts.csproj" />
       <ProjectReference Include="..\KuSys.DataAccess\KuSys.DataAccess.csproj" />
       <ProjectReference Include="..\KuSys.Entities\KuSys.Entities.csproj" />
     </ItemGroup>

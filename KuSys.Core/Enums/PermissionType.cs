@@ -8,10 +8,10 @@ public enum PermissionType
     /// <summary>
     /// Can do the operation only for own user.
     /// </summary>
-    Self,
+    StudentAccess,
     
     /// <summary>
     /// Can do the operation for everyone.
     /// </summary>
-    All
+    FullAccess
 }

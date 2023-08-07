@@ -1,5 +1,6 @@
 using System.Text;
 using FluentValidation;
+using KuSys.Contracts.MappingConfigs;
 using KuSys.Core.Middlewares;
 using KuSys.Core.Types;
 using KuSys.DataAccess;
@@ -7,9 +8,10 @@ using KuSys.DataAccess.Repositories.Course;
 using KuSys.DataAccess.Repositories.Student;
 using KuSys.DataAccess.Repositories.StudentCourses;
 using KuSys.DataAccess.Repositories.User;
-using KuSys.DataAccess.Seed;
 using KuSys.Entities;
 using KuSys.Services;
+using KuSys.Services.Interfaces;
+using Mapster;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
@@ -47,6 +49,7 @@ public static class ConfigurationExtensions
         JwtSettings jwtSettings = new JwtSettings();
         config.GetSection("JwtSettings").Bind(jwtSettings);
         serviceCollection.AddValidatorsFromAssemblyContaining(typeof(EntityBase<>));
+        TypeAdapterConfig.GlobalSettings.Scan(typeof(StudentMapConfigs).Assembly); // This will scan the assembly containing MappingConfig and register the configurations
         serviceCollection
                 // Add swagger support
             .AddSwaggerSupport()
@@ -54,8 +57,6 @@ public static class ConfigurationExtensions
             .RegisterServices()
                 // Configure AspNet.Identity and JWT Auth.
             .ConfigureIdentity(jwtSettings)
-                // Add required seed services.
-            .AddSeedServices()
                 // Add and configure DatabaseContext
             .AddKuSysDbContext(config.GetConnectionString("LocalConnection"));
         
@@ -119,13 +120,7 @@ public static class ConfigurationExtensions
         return serviceCollection;
     }
 
-    private static IServiceCollection AddSeedServices(this IServiceCollection serviceCollection)
-    {
-        serviceCollection.AddScoped<SeedRoles>();
-        return serviceCollection;
-    }
-    
-    private static IServiceCollection AddKuSysDbContext(this IServiceCollection serviceCollection,string connectionString)
+     private static IServiceCollection AddKuSysDbContext(this IServiceCollection serviceCollection,string connectionString)
     {
         serviceCollection.AddDbContext<KuSysDbContext>(o =>
         {

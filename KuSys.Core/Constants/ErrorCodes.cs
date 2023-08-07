@@ -1,6 +1,9 @@
 namespace KuSys.Core.Constants;
 
-public class ErrorCodes
+/// <summary>
+/// Error codes constants object. Made abstract to black unnecessary usages.
+/// </summary>
+public abstract class ErrorCodes
 {
     public const string DatabaseExceptionErrorCode = "KU-504";
     public const string DatabaseExceptionDefaultMsg = "There was an error with database!";

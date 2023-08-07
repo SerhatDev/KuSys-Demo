@@ -1,10 +1,14 @@
+using KuSys.Contracts.MappingConfigs;
+using KuSys.Contracts.RequestModels;
+using KuSys.Contracts.ResponseModels;
 using KuSys.Core;
 using KuSys.Core.Exceptions;
 using KuSys.Core.Types;
 using KuSys.DataAccess.Repositories.Student;
 using KuSys.DataAccess.Repositories.User;
 using KuSys.Entities;
-using KuSys.Entities.Requests;
+using KuSys.Services.Interfaces;
+using Mapster;
 using Moq;
 
 namespace KuSys.Services.Tests;
@@ -26,13 +30,14 @@ public class StudentServiceTests
         _mockUserRepository = new Mock<IUserRepository>();
         _mockStudentService = new Mock<IStudentService>();
         _studentService = new StudentService(_mockStudentRepository.Object,_mockUserRepository.Object);
+        TypeAdapterConfig.GlobalSettings.Scan(typeof(StudentMapConfigs).Assembly);
     }
     
     [Test]
     public async Task AddStudent_ValidRequest_ShouldReturnAddStudentResponse()
     {
         // Arrange
-        var requestModel = new AddStudentRequestModel
+        var requestModel = new NewStudentRequestModel()
         {
             FirstName = "John",
             LastName = "Doe",
@@ -60,7 +65,7 @@ public class StudentServiceTests
             Id = Guid.NewGuid(),
             FirstName = requestModel.FirstName,
             LastName = requestModel.LastName,
-            Gender = requestModel.Gender,
+            Gender = (int)requestModel.Gender,
             BirthDate = requestModel.BirthDate,
             UserId = userEntity.Id
         };
@@ -80,7 +85,7 @@ public class StudentServiceTests
     public async Task AddStudent_AddUserFailed_ShouldThrowDatabaseException()
     {
         // Arrange
-        var requestModel = new AddStudentRequestModel
+        var requestModel = new NewStudentRequestModel()
         {
             FirstName = "John",
             LastName = "Doe",
@@ -105,7 +110,7 @@ public class StudentServiceTests
     public async Task AddStudent_AddStudentFailed_ShouldThrowDatabaseException()
     {
         // Arrange
-        var requestModel = new AddStudentRequestModel
+        var requestModel = new NewStudentRequestModel()
         {
             FirstName = "John",
             LastName = "Doe",
@@ -145,7 +150,7 @@ public class StudentServiceTests
             Id = id,
             FirstName = "John",
             LastName = "Doe",
-            Gender = Gender.Male,
+            Gender = (int)Gender.Male,
             BirthDate = new DateTime(2000, 1, 1)
         };
         var mockStudentRepository = new Mock<IStudentRepository>();
@@ -162,7 +167,7 @@ public class StudentServiceTests
         Assert.That(studentEntity.Id,Is.EqualTo(result.Id));
         Assert.That(studentEntity.FirstName, Is.EqualTo(result.FirstName));
         Assert.That(studentEntity.LastName, Is.EqualTo(result.LastName));
-        Assert.That(studentEntity.Gender, Is.EqualTo(result.Gender));
+        Assert.That(studentEntity.Gender, Is.EqualTo((int)result.Gender));
         Assert.That(studentEntity.BirthDate, Is.EqualTo(result.BirthDate));
     }
     
@@ -196,8 +201,8 @@ public class StudentServiceTests
         var result = await studentService.DeleteStudentById(id);
 
         // Assert
-        Assert.That(OperationResult.Success,Is.EqualTo(result.Result));
-        Assert.That(id,Is.EqualTo(result.Data));
+        Assert.That(result.IsSuccess);
+        Assert.That(id,Is.EqualTo(result.Id));
     }
 
     [Test]
@@ -215,8 +220,8 @@ public class StudentServiceTests
         var result = await studentService.DeleteStudentById(id);
 
         // Assert
-        Assert.That(OperationResult.Failed,Is.EqualTo(result.Result));
-        Assert.That(id,Is.EqualTo(result.Data));
+        Assert.That(result.IsSuccess);
+        Assert.That(id,Is.EqualTo(result.Id));
     }
     
     [Test]
@@ -231,7 +236,7 @@ public class StudentServiceTests
             Gender = Gender.Male,
             BirthDate = new DateTime(2000, 1, 1)
         };
-        var existingStudent = new Student { Id = studentId, FirstName = "OldFirstName", LastName = "OldLastName", Gender = Gender.Female, BirthDate = new DateTime(1990, 1, 1) };
+        var existingStudent = new Student { Id = studentId, FirstName = "OldFirstName", LastName = "OldLastName", Gender = (int)Gender.Female, BirthDate = new DateTime(1990, 1, 1) };
 
         _mockStudentRepository
             .Setup(repo => repo.GetById(studentId))
@@ -244,10 +249,10 @@ public class StudentServiceTests
         var result = await _studentService.UpdateStudent(studentId, requestModel);
 
         // Assert
-        Assert.That(result.Result, Is.EqualTo(OperationResult.Success));
+        Assert.That(result.IsSuccess);
         Assert.That(existingStudent.FirstName, Is.EqualTo(requestModel.FirstName));
         Assert.That(existingStudent.LastName, Is.EqualTo(requestModel.LastName));
-        Assert.That(existingStudent.Gender, Is.EqualTo(requestModel.Gender));
+        Assert.That(existingStudent.Gender, Is.EqualTo((int)requestModel.Gender));
         Assert.That(existingStudent.BirthDate, Is.EqualTo(requestModel.BirthDate));
 
     }
@@ -256,7 +261,7 @@ public class StudentServiceTests
     public async Task UpdateStudent_NonExistingStudent_Failure()
     {
         // Arrange
-        Guid nonExistingStudentId = Guid.NewGuid();
+        var nonExistingStudentId = Guid.NewGuid();
         var requestModel = new UpdateStudentModel
         {
             FirstName = "John",
@@ -290,7 +295,7 @@ public class StudentServiceTests
             Gender = Gender.Male,
             BirthDate = new DateTime(2000, 1, 1)
         };
-        var existingStudent = new Student { Id = studentId, FirstName = "OldFirstName", LastName = "OldLastName", Gender = Gender.Female, BirthDate = new DateTime(1990, 1, 1) };
+        var existingStudent = new Student { Id = studentId, FirstName = "OldFirstName", LastName = "OldLastName", Gender = (int)Gender.Female, BirthDate = new DateTime(1990, 1, 1) };
 
         _mockStudentService
             .Setup(service => service.UpdateStudent(studentId, requestModel))
@@ -309,6 +314,160 @@ public class StudentServiceTests
         {
             await _mockStudentService.Object.UpdateStudent(studentId, requestModel);
         });
+    }
+    
+    
+    [Test]
+    public async Task GetAll_WithEmptyData_ReturnsEmptyListResponse()
+    {
+        // Arrange
+        var requestModel = new GetStudentsRequest
+        {
+            // Set properties of requestModel as needed for the test
+        };
+
+        // Mock an empty response from the student repository
+        var studentData = new List<Student>();
+        _mockStudentRepository.Setup(r => r.GetAll(requestModel))
+            .ReturnsAsync(new PagedResponse<Student>());
+
+        // Act
+        var result = await _studentService.GetAll(requestModel);
+
+        // Assert
+        Assert.That(result,Is.Not.Null);
+        Assert.IsInstanceOf<StudentListResponse>(result);
+        Assert.That(result.Students,Is.Null);
+    }
+    
+    [Test]
+    public async Task GetAll_WithNullRequest_ReturnsNullResponse()
+    {
+        // Arrange
+        GetStudentsRequest requestModel = null;
+
+        // Act
+        var result = await _studentService.GetAll(requestModel);
+
+        // Assert
+        Assert.That(result, Is.Null);
+    }
+    
+    [Test]
+    public async Task GetAll_WithValidRequest_ReturnsStudentListResponse()
+    {
+        // Arrange
+        var requestModel = new GetStudentsRequest
+        {
+            PageNumber = 1,
+            PageSize = 10
+        };
+
+        // Mock the response of the student repository
+        var studentData = new List<Student>()
+        {
+            new Student()
+            {
+                FirstName = "John",
+                LastName = "Doee",
+                BirthDate = DateTime.UtcNow
+            }
+        };
+        _mockStudentRepository.Setup(r => r.GetAll(It.IsAny<GetStudentsRequest>()))
+            .ReturnsAsync(new PagedResponse<Student>()
+            {
+                Data = studentData,
+                PageNumber = 1,
+                PageSize = 10,
+                RecordsCount = 1,
+                PageCount = 1
+            });
+
+        // Act
+        var result = await _studentService.GetAll(requestModel);
+
+        // Assert
+        Assert.That(result.IsSuccess);
+        Assert.That(result.PageNumber, Is.EqualTo(1));
+        Assert.That(result.PageSize, Is.EqualTo(10));
+        Assert.That(result.Students.Count, Is.EqualTo(1));
+    }
+    
+    [Test]
+    public async Task GetStudentsWithCourses_WithValidRequest_ReturnsStudentWithCoursesListResponse()
+    {
+        // Arrange
+        var requestModel = new GetStudentsWithCoursesRequest();
+
+        // Mock the response of the student repository
+        var studentData = new PagedResponse<StudentsWithCoursesResponse>
+        {
+            Data = new List<StudentsWithCoursesResponse>
+            {
+                new()
+                {
+                    Student = new StudentResponseModel()
+                    {
+                        BirthDate = DateTime.Now,
+                        FirstName = "John",
+                        LastName = "Doe",
+                        Gender = Gender.Male,
+                        Id=Guid.NewGuid()
+                    },
+                    Courses = new List<CourseResponseModel>(new List<CourseResponseModel>()
+                    {
+                        new()
+                        {
+                            Code = "MAT-1",
+                            Name = "Mathematics"
+                        },
+                        new()
+                        {
+                            Code = "PHY-1",
+                            Name = "Physics"
+                        }
+                    })
+                },
+                new()
+                {
+                    Student = new StudentResponseModel()
+                    {
+                        BirthDate = DateTime.Now,
+                        FirstName = "Julia",
+                        LastName = "Doe",
+                        Gender = Gender.Female,
+                        Id=Guid.NewGuid()
+                    },
+                    Courses = new List<CourseResponseModel>(new List<CourseResponseModel>()
+                    {
+                        new()
+                        {
+                            Code = "MAT-1",
+                            Name = "Mathematics"
+                        }
+                    })
+                }
+            },
+            RecordsCount = 2,
+            PageCount = 1,
+            PageNumber = 1,
+            PageSize = 10
+        };
+        
+        _mockStudentRepository.Setup(r => r.StudentsWithCourses(requestModel)).ReturnsAsync(studentData);
+
+        // Act
+        var result = await _studentService.GetStudentsWithCourses(requestModel);
+
+        // Assert
+        Assert.IsNotNull(result);
+        Assert.IsTrue(result.IsSuccess);
+        Assert.That(result.RecordsCount, Is.EqualTo(2));
+        Assert.That(result.PageCount, Is.EqualTo(1));
+        Assert.That(result.PageNumber, Is.EqualTo(1));
+        Assert.That(result.PageSize, Is.EqualTo(10));
+        Assert.IsNotNull(result.Data);
+        Assert.That(result.Data.Count, Is.EqualTo(2));
     }
 
 }

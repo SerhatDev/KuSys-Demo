@@ -1,4 +1,6 @@
 using System.Security.Claims;
+using Mapster;
+using Microsoft.AspNetCore.Identity;
 
 namespace KuSys.Core.Constants;
 
@@ -21,13 +23,38 @@ public static class DefaultRoles
     /// Get default claims for Admin Role.
     /// </summary>
     /// <returns></returns>
-    public static List<Claim> AdminClaims()
+    public static List<IdentityRoleClaim<Guid>> AdminClaims(Guid roleId)
     {
-        List<Claim> claims = new List<Claim>();
-        claims.Add(new Claim("US-1",PermissionType.All.ToString()));
-        claims.Add(new Claim("US-2",PermissionType.All.ToString()));
-        claims.Add(new Claim("US-3",PermissionType.All.ToString()));
-        claims.Add(new Claim("US-4",PermissionType.All.ToString()));
+        List<IdentityRoleClaim<Guid>> claims = new();
+        
+        claims.Add(new IdentityRoleClaim<Guid>()
+        {
+            ClaimType = "US-1", 
+            ClaimValue = PermissionType.FullAccess.ToString(),
+            RoleId = roleId,
+            Id = 1
+        });
+        claims.Add(new IdentityRoleClaim<Guid>()
+        {
+            ClaimType = "US-2", 
+            ClaimValue = PermissionType.FullAccess.ToString(),
+            RoleId = roleId,
+            Id = 2
+        });
+        claims.Add(new IdentityRoleClaim<Guid>()
+        {
+            ClaimType = "US-3", 
+            ClaimValue = PermissionType.FullAccess.ToString(),
+            RoleId = roleId,
+            Id = 3
+        });
+        claims.Add(new IdentityRoleClaim<Guid>()
+        {
+            ClaimType = "US-4", 
+            ClaimValue = PermissionType.FullAccess.ToString(),
+            RoleId = roleId,
+            Id = 4
+        });
 
         return claims;
     }
@@ -36,12 +63,31 @@ public static class DefaultRoles
     /// Get default claims for User role.
     /// </summary>
     /// <returns></returns>
-    public static List<Claim> StudentClaims()
+    public static List<IdentityRoleClaim<Guid>> StudentClaims(Guid roleId)
     {
-        List<Claim> claims = new List<Claim>();
-        claims.Add(new Claim("US-2",PermissionType.Self.ToString()));
-        claims.Add(new Claim("US-3",PermissionType.Self.ToString()));
-        claims.Add(new Claim("US-4",PermissionType.Self.ToString()));
+        List<IdentityRoleClaim<Guid>> claims = new();
+        
+        claims.Add(new IdentityRoleClaim<Guid>()
+        {
+            ClaimType = "US-2", 
+            ClaimValue = PermissionType.StudentAccess.ToString(),
+            RoleId = roleId,
+            Id = 5
+        });
+        claims.Add(new IdentityRoleClaim<Guid>()
+        {
+            ClaimType = "US-3", 
+            ClaimValue = PermissionType.StudentAccess.ToString(),
+            RoleId = roleId,
+            Id = 6
+        });
+        claims.Add(new IdentityRoleClaim<Guid>()
+        {
+            ClaimType = "US-4", 
+            ClaimValue = PermissionType.FullAccess.ToString(),
+            RoleId = roleId,
+            Id = 7
+        });
 
         return claims;
     }

@@ -1,8 +1,11 @@
+using KuSys.Contracts.RequestModels;
+using KuSys.Contracts.ResponseModels;
 using KuSys.Core;
+using KuSys.Core.AttributeFilters;
 using KuSys.Core.Types;
 using KuSys.Entities;
-using KuSys.Entities.Requests;
 using KuSys.Services;
+using KuSys.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,16 +40,17 @@ public sealed class AuthController : ControllerBase
     /// <returns>Returns Id of newly created User.</returns>
     [HttpPost("register")]
     [AllowAnonymous]
-    [ProducesResponseType(typeof(DbCreateResult<Guid>),200)]
-    public async Task<IActionResult> Register(RegisterUserRequestModel requestModel)
+    [ProducesResponseType(typeof(RegisterResponseModel),200)]
+    [ProducesResponseType(typeof(RegisterResponseModel),400)]
+    [Consumes(typeof(RegisterRequestModel),"text/json")]
+    [ValidateRequest]
+    public async Task<IActionResult> Register(RegisterRequestModel requestModel)
     {
-        // Create user with provided data via userService.
+        // WithData user with provided data via userService.
         var serviceResponse = await _userService.CreateUser(requestModel);
-        
-        // Depends on operation status, Return OkResult or BadRequest
-        return serviceResponse.Result == OperationResult.Success
-            ? Ok(serviceResponse.Data)
-            : BadRequest();
+
+        // Return the response of the service.
+        return ApiResponse.WithData(serviceResponse);
     }
 
 
@@ -56,27 +60,29 @@ public sealed class AuthController : ControllerBase
     /// <param name="requestModel"></param>
     /// <returns>Returns Access token.</returns>
     [HttpPost("login")]
-    [ProducesResponseType(typeof(string),200)]
+    [ProducesResponseType(typeof(LoginResponseModel),200)]
+    [Consumes(typeof(LoginRequestModel),"text/json")]
+    [ValidateRequest]
     public async Task<IActionResult> Login(LoginRequestModel requestModel)
     {
         // Try to log user in with provided information.
-        var res = await _userService.Login(requestModel);
+        var serviceResponse = await _userService.Login(requestModel);
 
-        // Depends on operation status, Return OkResult or BadRequest
-        return res.IsSuccessfull
-            ? Ok(res.Token)
-            : BadRequest(res.ErrorMessage);  
+        // Return the response of the service.
+        return ApiResponse.WithData(serviceResponse);
     }
 
     /// <summary>
     /// This endpoint specifically created for test purposes. Use this endpoint to assign admin role to any user.
     /// </summary>
     /// <param name="requestModel"></param>
-    /// <returns>Returns 200 if operation was successfull</returns>
+    /// <returns>Returns 200 if operation was successful</returns>
     [HttpPost("make-admin")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(typeof(bool), 200)]
     [ProducesResponseType(400)]
+    [Consumes(typeof(LoginRequestModel),"text/json")]
+    [ValidateRequest]
     public async Task<IActionResult> MakeAdmin(LoginRequestModel requestModel)
     {
         // Try to assign admin role to the user which specified in request.
@@ -95,8 +101,10 @@ public sealed class AuthController : ControllerBase
     /// <returns></returns>
     [HttpPost("make-student")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    [ProducesResponseType(200)]
+    [ProducesResponseType(typeof(bool),200)]
     [ProducesResponseType(400)]
+    [Consumes(typeof(LoginRequestModel),"text/json")]
+    [ValidateRequest]
     public async Task<IActionResult> MakeStudent(LoginRequestModel requestModel)
     {
         // Try to assign Student role to the user which specified in request.

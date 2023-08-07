@@ -1,9 +1,11 @@
+using KuSys.Contracts.RequestModels;
+using KuSys.Contracts.ResponseModels;
 using KuSys.Core;
 using KuSys.Core.AttributeFilters;
 using KuSys.Core.Types;
 using KuSys.Entities;
-using KuSys.Entities.Requests;
 using KuSys.Services;
+using KuSys.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -42,15 +44,19 @@ public class StudentController : ControllerBase
     [HttpGet]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ClaimRequirement("US-1")]
-    [ProducesResponseType(typeof(PagedResponse<Student>),200)]
-    [Consumes(typeof(GetAllStudentRequest),"text/json")]
-    public async Task<IActionResult> GetAllStudents([FromQuery]GetAllStudentRequest request)
+    [ProducesResponseType(typeof(StudentListResponse),200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
+    [Consumes(typeof(GetStudentsRequest),"text/json")]
+    [ValidateRequest]
+    public async Task<IActionResult> GetAllStudents([FromQuery]GetStudentsRequest request)
     {
         // Get all active students via studentService
         var data = await _studentService.GetAll(request);
         
         // Return retrieved data with OkResponse.
-        return Ok(data);
+        return ApiResponse.WithData(data);
     }
 
     /// <summary>
@@ -61,34 +67,42 @@ public class StudentController : ControllerBase
     [HttpPost]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ClaimRequirement("US-1")]
-    [ProducesResponseType(typeof(AddStudentResponse),200)]
-    [Consumes(typeof(AddStudentRequestModel),"text/json")]
-    public async Task<IActionResult> AddStudent(AddStudentRequestModel request)
+    [ProducesResponseType(typeof(NewStudentResponseModel),200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
+    [Consumes(typeof(NewStudentRequestModel),"text/json")]
+    [ValidateRequest]
+    public async Task<IActionResult> AddStudent(NewStudentRequestModel request)
     {
         // Try to add new student and user for the student.
         var data = await _studentService.AddStudent(request);
         
         // Return result
-        return Ok(data);
+        return ApiResponse.Created(this, data);
     }
 
     /// <summary>
-    /// Get Student information with given StudentId. ***(ADMIN ONLY) US-1***
+    /// Get Student information with given StudentId. *** Admins can get any student by id while students can only get their own information ***
     /// </summary>
     /// <param name="id">Student Id</param>
     /// <returns></returns>
     [HttpGet("{id:guid}")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ClaimRequirement("US-1")]
-    [ProducesResponseType(typeof(GetStudentResponse),200)]
+    [ProducesResponseType(typeof(StudentResponseModel),200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
     public async Task<IActionResult> GetStudentById(Guid id)
     {
         // Get student information for given studentId.
-        var data = await _studentService.GetStudentById(id);
+        var serviceResponse = await _studentService.GetStudentById(id);
         
         // Return found Student object
-        return Ok(data);
+        return ApiResponse.WithData(serviceResponse);
     }
+    
 
     /// <summary>
     /// Delete student with given StudentId. --IT WILL SOFT DELETE--  ***(ADMIN ONLY) US-1***
@@ -99,16 +113,16 @@ public class StudentController : ControllerBase
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ClaimRequirement("US-1")]
     [ProducesResponseType(204)]
-    [ProducesResponseType(typeof(string),400)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
     public async Task<IActionResult> RemoveStudentById(Guid id)
     {
         // Soft delete student with given StudentId via StudentService.
         var data = await _studentService.DeleteStudentById(id);
         
-        // Return 204 status if operations was succesfull, otherwise return BadRequest with errorMessage.
-        return data.Result == OperationResult.Success
-            ? NoContent()
-            : BadRequest(data.ErrorMessage);
+        // Return 204 status if operations was successful, otherwise return BadRequest with errorMessage.
+        return ApiResponse.Deleted(data);
     }
 
     /// <summary>
@@ -120,50 +134,63 @@ public class StudentController : ControllerBase
     [HttpPatch("{id:guid}")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ClaimRequirement("US-1")]
-    [ProducesResponseType(typeof(DbUpdateResult<Student>),200)]
-    [ProducesResponseType(typeof(string),400)]
+    [ProducesResponseType(204)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
     [Consumes(typeof(UpdateStudentModel),"text/json")]
+    [ValidateRequest]
     public async Task<IActionResult> UpdateStudent(Guid id,UpdateStudentModel requestModel)
     {
         // Update specified student with specified values via StudentService.
-        var data = await _studentService.UpdateStudent(id,requestModel);
+        var serviceResponse = await _studentService.UpdateStudent(id,requestModel);
         
         // Return 200 status with operation data if operation was successful otherwise return BadRequest with errorMessage.
-        return data.Result == OperationResult.Success
-            ? Ok(data)
-            : BadRequest(data.ErrorMessage);
+        return ApiResponse.Updated(serviceResponse);
     }
 
     /// <summary>
     /// Get available course list for Specified Student.
     /// </summary>
     /// <param name="studentId">StudentId</param>
+    /// <param name="request">Paging Information.</param>
     /// <returns></returns>
     [HttpGet("{studentId:guid}/available-courses")]
-    [ProducesResponseType(typeof(List<CoursesResponse>),200)]
-    public async Task<IActionResult> AvailableCourses(Guid studentId)
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [ProducesResponseType(typeof(CourseListResponseModel),200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
+    [ValidateRequest]
+    public async Task<IActionResult> AvailableCourses(Guid studentId,[FromQuery] AvailableCoursesRequest request)
     {
         // Get the list of courses for specified student which the student wasn't matched yet.
-        var data = await _studentCourseService.GetAvailableCourses(studentId);
+        var serviceResponse = await _studentCourseService.GetAvailableCourses(studentId,request);
         
         // Return the data from the service with 200 status code.
-        return Ok(data);
+        return ApiResponse.WithData(serviceResponse);
     }
 
     /// <summary>
     /// Get the list of courses in which the specified student has been matched.
     /// </summary>
     /// <param name="studentId">Student Id</param>
+    /// <param name="request">Paging Informaiton</param>
     /// <returns></returns>
     [HttpGet("{studentId:guid}/courses")]
-    [ProducesResponseType(typeof(List<CoursesResponse>),200)]
-    public async Task<IActionResult> JointCourses(Guid studentId)
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [ProducesResponseType(typeof(CourseListResponseModel),200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
+    [ProducesResponseType(403)]
+    [ValidateRequest]
+    public async Task<IActionResult> JointCourses(Guid studentId,[FromQuery] JoinedCoursesRequest request)
     {
         // Get the list of courses in which the specified student has been matched.
-        var data = await _studentCourseService.GetJoinedCourses(studentId);
+        var serviceResponse = await _studentCourseService.GetJoinedCourses(studentId,request);
         
         // Return the list with 200 status code.
-        return Ok(data);
+        return ApiResponse.WithData(serviceResponse);
     }
 
     /// <summary>
@@ -172,38 +199,42 @@ public class StudentController : ControllerBase
     /// <param name="studentId"></param>
     /// <param name="request"></param>
     /// <returns></returns>
-    [HttpPost("{studentId:guid}/courses")]
+    [HttpPost("{studentId:guid}/Courses")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ClaimRequirement("US-1")]
-    [ProducesResponseType(typeof(DbCreateResult<StudentCourse>),200)]
+    [ProducesResponseType(typeof(SelectCourseResponseModel),200)]
     [ProducesResponseType(typeof(string),400)]
+    [ProducesResponseType(typeof(string),401)]
+    [ProducesResponseType(typeof(string),403)]
     [Consumes(typeof(SelectCourseRequest),"text/json")]
+    [ValidateRequest]
     public async Task<IActionResult> SelectCourse(Guid studentId, SelectCourseRequest request)
     {
         // Assign specified student to specified course. This will throw an error if student was matched with that course before.
-        var data = await _studentCourseService.SelectCourse(studentId, request);
+        var serviceResponse = await _studentCourseService.SelectCourse(studentId, request);
         
         // Return data with 200 status code if the operation was successful otherwise return BadRequest.
-        return data.Result == OperationResult.Success
-            ? Ok(data)
-            : BadRequest(data.ErrorMessage);
+        return ApiResponse.Created(this, serviceResponse);
     }
 
     /// <summary>
     /// Get students with their course info.  ***(ADMIN ONLY) US-1***
     /// </summary>
     /// <returns></returns>
-    [HttpGet("courses")]
+    [HttpGet("Courses")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     [ClaimRequirement("US-1")]
-    [ProducesResponseType(typeof(DbQueryListResult<StudentsWithCourseResponse>),200)]
+    [ProducesResponseType(typeof(StudentWithCoursesListResponse),200)]
     [ProducesResponseType(typeof(string),400)]
-    public async Task<IActionResult> GetStudentsWithCourses()
+    [ProducesResponseType(typeof(string),401)]
+    [ProducesResponseType(typeof(string),403)]
+    [ValidateRequest]
+    public async Task<IActionResult> GetStudentsWithCourses([FromQuery] GetStudentsWithCoursesRequest request)
     {
         // Get the list of students with their course info.
-        var data = await _studentService.GetStudentsWithCourses();
+        var data = await _studentService.GetStudentsWithCourses(request);
         
         // Return data with 200 status code if operation was successful otherwise return BadRequest.
-        return data.Result == OperationResult.Success
-            ? Ok(data)
-            : BadRequest(data.ErrorMessage);
+        return ApiResponse.WithData(data);
     }
 }

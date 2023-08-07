@@ -8,7 +8,7 @@ namespace KuSys.Core.Exceptions;
 /// </summary>
 public class ExceptionBuilder
 {
-    private ExceptionModel  _exception = new ExceptionModel ();
+    private ExceptionModel  _exception = new();
 
     /// <summary>
     /// Reset values of builder.

@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using KuSys.Core;
 using Microsoft.AspNetCore.Identity;
 
 namespace KuSys.Entities;
@@ -30,4 +29,6 @@ public sealed class User  : IdentityUser<Guid>
     /// Used to soft-delete users. 
     /// </summary>
     public bool IsDeleted { get; set; }
+    
+    
 }
